@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         mNewsCon = (RecyclerView)findViewById(R.id.news_container);
         mNewsCon.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
         meiZhis = new ArrayList<>();
-        NewsAdapter newsAdapter = new NewsAdapter(meiZhis);
+        NewsAdapter newsAdapter = new NewsAdapter(meiZhis, this);
         mNewsCon.setAdapter(newsAdapter);
         new LoadMeizhiTask(newsAdapter, meiZhis).execute();
     }

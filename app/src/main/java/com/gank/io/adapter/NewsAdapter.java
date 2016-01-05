@@ -1,7 +1,12 @@
 package com.gank.io.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +15,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.gank.io.MainActivity;
 import com.gank.io.R;
 import com.gank.io.task.LoadMeizhiTask;
+import com.gank.io.ui.MeizhiPreview;
 import com.gank.io.util.ContentItem;
 
 import java.text.ParseException;
@@ -28,9 +35,11 @@ public class NewsAdapter  extends RecyclerView.Adapter<NewsAdapter.NewsAdapterVi
 
     private static final String LOG_TAG = NewsAdapter.class.getSimpleName();
     private ArrayList<HashMap<String, String>> meiZhis;
+    private AppCompatActivity mainActivity;
 
-    public NewsAdapter(ArrayList<HashMap<String, String>> meiZhis) {
+    public NewsAdapter(ArrayList<HashMap<String, String>> meiZhis, AppCompatActivity activity) {
         this.meiZhis = meiZhis;
+        this.mainActivity = activity;
     }
 
     @Override
@@ -60,6 +69,17 @@ public class NewsAdapter  extends RecyclerView.Adapter<NewsAdapter.NewsAdapterVi
                     String month = (new SimpleDateFormat("MM")).format(date);
                     String day = (new SimpleDateFormat("dd")).format(date);
                     Log.d(LOG_TAG, "year:" + year + " month:" + month + " day" + day);
+                    FragmentManager manager = mainActivity.getSupportFragmentManager();
+                    MeizhiPreview preview = new MeizhiPreview();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("year", year);
+                    bundle.putString("month", month);
+                    bundle.putString("day", day);
+                    preview.setArguments(bundle);
+                    FragmentTransaction transaction = manager.beginTransaction();
+                    transaction.add(android.R.id.content, preview);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
                 } catch (ParseException e) {
                     Log.d(LOG_TAG, "publish date is " + publishDate);
                     e.printStackTrace();
