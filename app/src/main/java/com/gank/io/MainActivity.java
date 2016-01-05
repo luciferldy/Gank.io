@@ -14,11 +14,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.gank.io.adapter.NewsAdapter;
+import com.gank.io.task.LoadMeizhiTask;
+import com.gank.io.util.ContentItem;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private RecyclerView mNewsCon;
+    private ArrayList<HashMap<String, String>> meiZhis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
 
         mNewsCon = (RecyclerView)findViewById(R.id.news_container);
         mNewsCon.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
-        mNewsCon.setAdapter(new NewsAdapter(getBaseContext()));
+        meiZhis = new ArrayList<>();
+        NewsAdapter newsAdapter = new NewsAdapter(meiZhis);
+        mNewsCon.setAdapter(newsAdapter);
+        new LoadMeizhiTask(newsAdapter, meiZhis).execute();
     }
 
     @Override
@@ -55,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
