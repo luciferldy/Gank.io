@@ -1,6 +1,7 @@
 package com.gank.io.ui;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.gank.io.R;
 import com.gank.io.util.ContentItem;
 import com.gank.io.util.GetRss;
@@ -30,12 +32,14 @@ public class NewsContentFragment extends Fragment {
     private static final String LOG_TAG = NewsContentFragment.class.getSimpleName();
     private HashMap<String, ArrayList<ContentItem>> mContents;
     private LinearLayout rssContent;
+    private SimpleDraweeView rssImg;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.news_content, container, false);
         rssContent = (LinearLayout) root.findViewById(R.id.content_meizhi_rss);
+        rssImg = (SimpleDraweeView) root.findViewById(R.id.content_meizhi_img);
         Bundle bundle = getArguments();
         String year, month, day;
         if (bundle != null) {
@@ -79,6 +83,7 @@ public class NewsContentFragment extends Fragment {
         }
     }
 
+    // recycleView的适配器
     private class RssViewAdapter extends RecyclerView.Adapter<RssItemViewHolder>{
 
         private ArrayList<ContentItem> rssItem;
@@ -101,7 +106,7 @@ public class NewsContentFragment extends Fragment {
         @Override
         public RssItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-            View root = layoutInflater.inflate(R.layout.rss_item, parent);
+            View root = layoutInflater.inflate(R.layout.rss_item, parent, false);
             RssItemViewHolder holder = new RssItemViewHolder(root);
             return holder;
         }
@@ -123,12 +128,25 @@ public class NewsContentFragment extends Fragment {
         }
     }
 
+    // 动态设置内容
     private void setRssView() {
+        if (mContents.get(ContentItem.MEI_ZHI) != null) {
+            mContents.get(ContentItem.MEI_ZHI).get(0);
+            Uri imgUri = Uri.parse(mContents.get(ContentItem.MEI_ZHI).get(0).getUrl());
+            rssImg.setImageURI(imgUri);
+        }
         for (Map.Entry<String, ArrayList<ContentItem>> entry : mContents.entrySet()) {
-            entry.getKey();
-            entry.getValue();
+            Log.d(LOG_TAG, "key: " + entry.getKey() + " value： " + entry.getValue());
+            if (entry.getKey().equals(ContentItem.MEI_ZHI)) {
+                continue;
+            }
+            TextView keyTv = new TextView(getContext());
+            keyTv.setText(entry.getKey());
+            rssContent.addView(keyTv);
             RecyclerView itemRv = new RecyclerView(getContext());
-            itemRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+            itemRv.setLayoutManager(new WrappingLinearLayoutManager(getContext()));
+            itemRv.setNestedScrollingEnabled(false);
+            itemRv.setHasFixedSize(false);
             RssViewAdapter adapter = new RssViewAdapter(entry.getValue());
             itemRv.setAdapter(adapter);
             rssContent.addView(itemRv);
