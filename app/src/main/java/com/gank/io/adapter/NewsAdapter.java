@@ -19,6 +19,7 @@ import com.gank.io.MainActivity;
 import com.gank.io.R;
 import com.gank.io.task.LoadMeizhiTask;
 import com.gank.io.ui.MeizhiPreview;
+import com.gank.io.ui.NewsContentFragment;
 import com.gank.io.util.ContentItem;
 
 import java.text.ParseException;
@@ -70,24 +71,39 @@ public class NewsAdapter  extends RecyclerView.Adapter<NewsAdapter.NewsAdapterVi
                     String day = (new SimpleDateFormat("dd")).format(date);
                     Log.d(LOG_TAG, "year:" + year + " month:" + month + " day" + day);
                     FragmentManager manager = mainActivity.getSupportFragmentManager();
-                    MeizhiPreview preview = new MeizhiPreview();
+                    NewsContentFragment newsItem = new NewsContentFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("year", year);
                     bundle.putString("month", month);
                     bundle.putString("day", day);
-                    preview.setArguments(bundle);
+                    newsItem.setArguments(bundle);
                     FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.add(android.R.id.content, preview);
+                    transaction.add(android.R.id.content, newsItem);
                     transaction.addToBackStack(null);
                     transaction.commit();
                 } catch (ParseException e) {
                     Log.d(LOG_TAG, "publish date is " + publishDate);
                     e.printStackTrace();
                 }
-            }});
-            Uri uri = Uri.parse(meiZhis.get(position).get(ContentItem.URL));
-            holder.newsImg.setImageURI(uri);
-        }
+            }
+        });
+        Uri uri = Uri.parse(meiZhis.get(position).get(ContentItem.URL));
+        holder.newsImg.setImageURI(uri);
+        holder.newsImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager manager = mainActivity.getSupportFragmentManager();
+                MeizhiPreview preview = new MeizhiPreview();
+                Bundle bundle = new Bundle();
+                bundle.putString(ContentItem.URL, meiZhis.get(position).get(ContentItem.URL));
+                preview.setArguments(bundle);
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.add(android.R.id.content, preview);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+    }
 
         @Override
     public int getItemCount() {

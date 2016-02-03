@@ -21,7 +21,7 @@ public class ParseRss {
         try {
             JSONObject totalData = new JSONObject(result);
             JSONObject myResults = totalData.getJSONObject(RESULTS);
-            JSONArray myCategory = myResults.getJSONArray(CATEGORY);
+            JSONArray myCategory = totalData.getJSONArray(CATEGORY);
             // 种类初始化
             HashMap<String, ArrayList<ContentItem>> mResults = new HashMap<>();
             // 获取所有种类

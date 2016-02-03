@@ -1,5 +1,7 @@
 package com.gank.io.util;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,7 @@ public class GetRss {
 
     private static final String API_URL = "http://gank.avosapps.com/api/day/";
     private static final String API_MEIZHI_URL = "http://gank.avosapps.com/api/data/%E7%A6%8F%E5%88%A9/";
+    private static final String TAG = GetRss.class.getSimpleName();
 
     public static String getRssContent(String date) {
         try {
@@ -24,6 +27,8 @@ public class GetRss {
             urlCon.setRequestMethod("GET");
             if (urlCon.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 return getStringFromInputStream(urlCon.getInputStream());
+            } else {
+                Log.d(TAG, "request rss content failed");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -33,7 +38,7 @@ public class GetRss {
         return null;
     }
 
-    public static String getMeizhiContent(String postfix) {
+    public static String getMeizhiImg(String postfix) {
         try {
             URL url = new URL(API_MEIZHI_URL + postfix);
             HttpURLConnection urlCon = (HttpURLConnection)url.openConnection();
@@ -42,6 +47,8 @@ public class GetRss {
             urlCon.setRequestMethod("GET");
             if (urlCon.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 return getStringFromInputStream(urlCon.getInputStream());
+            } else {
+                Log.d(TAG, "request rss mezhi image failed");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();

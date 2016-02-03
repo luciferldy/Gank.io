@@ -29,7 +29,7 @@ public class LoadMeizhiTask extends AsyncTask<Void, Integer, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... voids) {
-        String result = GetRss.getMeizhiContent("10/1");
+        String result = GetRss.getMeizhiImg("10/1");
         if (result == null) {
             return false;
         }
