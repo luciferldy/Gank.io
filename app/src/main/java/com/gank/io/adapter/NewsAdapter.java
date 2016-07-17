@@ -1,7 +1,5 @@
 package com.gank.io.adapter;
 
-import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -15,17 +13,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.gank.io.MainActivity;
 import com.gank.io.R;
-import com.gank.io.task.LoadMeizhiTask;
-import com.gank.io.ui.MeizhiPreview;
-import com.gank.io.ui.NewsContentFragment;
-import com.gank.io.util.ContentItem;
+import com.gank.io.ui.fragment.ImgPreviewFragment;
+import com.gank.io.ui.fragment.NewsFragment;
+import com.gank.io.model.ContentItem;
+import com.gank.io.util.Logger;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -71,7 +67,7 @@ public class NewsAdapter  extends RecyclerView.Adapter<NewsAdapter.NewsAdapterVi
                     String day = (new SimpleDateFormat("dd")).format(date);
                     Log.d(LOG_TAG, "year:" + year + " month:" + month + " day" + day);
                     FragmentManager manager = mainActivity.getSupportFragmentManager();
-                    NewsContentFragment newsItem = new NewsContentFragment();
+                    NewsFragment newsItem = new NewsFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("year", year);
                     bundle.putString("month", month);
@@ -79,7 +75,7 @@ public class NewsAdapter  extends RecyclerView.Adapter<NewsAdapter.NewsAdapterVi
                     newsItem.setArguments(bundle);
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.add(android.R.id.content, newsItem);
-                    transaction.addToBackStack(null);
+                    transaction.addToBackStack(NewsFragment.class.getSimpleName() + System.currentTimeMillis());
                     transaction.commit();
                 } catch (ParseException e) {
                     Log.d(LOG_TAG, "publish date is " + publishDate);
@@ -93,13 +89,13 @@ public class NewsAdapter  extends RecyclerView.Adapter<NewsAdapter.NewsAdapterVi
             @Override
             public void onClick(View view) {
                 FragmentManager manager = mainActivity.getSupportFragmentManager();
-                MeizhiPreview preview = new MeizhiPreview();
+                ImgPreviewFragment preview = new ImgPreviewFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(ContentItem.URL, meiZhis.get(position).get(ContentItem.URL));
                 preview.setArguments(bundle);
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.add(android.R.id.content, preview);
-                transaction.addToBackStack(null);
+                transaction.addToBackStack(ImgPreviewFragment.class.getSimpleName() + System.currentTimeMillis());
                 transaction.commit();
             }
         });
@@ -120,10 +116,26 @@ public class NewsAdapter  extends RecyclerView.Adapter<NewsAdapter.NewsAdapterVi
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("NormalTextViewHolder", "onClick--> position = " + getPosition());
+                    Logger.i("NormalTextViewHolder", "onClick--> position = " + getPosition());
                 }
             });
         }
+    }
+
+    /**
+     * click the recycle view interface
+     */
+    public interface IClickMainItem{
+
+        /**
+         * click the pic
+         */
+        void onClickGankItemGirl();
+
+        /**
+         * click the item
+         */
+        void onClickGankItem();
     }
 }
 

@@ -14,11 +14,11 @@ import java.net.URL;
  */
 public class GetRss {
 
-    private static final String API_URL = "http://gank.avosapps.com/api/day/";
-    private static final String API_MEIZHI_URL = "http://gank.avosapps.com/api/data/%E7%A6%8F%E5%88%A9/";
     private static final String TAG = GetRss.class.getSimpleName();
+    private static final String API_URL = "http://gank.io/api/day/";
+    private static final String API_MEIZHI_URL = "http://gank.io/api/data/%E7%A6%8F%E5%88%A9/";
 
-    public static String getRssContent(String date) {
+        public static String getRssContent(String date) {
         try {
             URL url = new URL(API_URL + date);
             HttpURLConnection urlCon = (HttpURLConnection)url.openConnection();
@@ -28,7 +28,7 @@ public class GetRss {
             if (urlCon.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 return getStringFromInputStream(urlCon.getInputStream());
             } else {
-                Log.d(TAG, "request rss content failed");
+                Logger.i(TAG, "request rss content failed");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -48,7 +48,7 @@ public class GetRss {
             if (urlCon.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 return getStringFromInputStream(urlCon.getInputStream());
             } else {
-                Log.d(TAG, "request rss mezhi image failed");
+                Logger.i(TAG, "request rss mezhi image failed");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();

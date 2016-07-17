@@ -1,4 +1,4 @@
-package com.gank.io.util;
+package com.gank.io.model;
 
 /**
  * Created by lucifer on 16-1-5.
@@ -7,25 +7,25 @@ public class ContentItem {
 
     public static final String MEI_ZHI = "福利";
 
-    public static final String WHO = "who";
-    public static final String PUBLISHED_AT = "publishedAt";
+    public static final String OBJECT_ID = "_id";
+    public static final String CREATE_AT = "createdAt";
     public static final String DESC = "desc";
+    public static final String PUBLISHED_AT = "publishedAt";
+    public static final String SOURCE = "source";
     public static final String TYPE = "type";
     public static final String URL = "url";
     public static final String USED = "used";
-    public static final String OBJECT_ID = "objectId";
-    public static final String CREATE_AT = "createdAt";
-    public static final String UPDATE_AT = "updatedAt";
+    public static final String WHO = "who";
 
     private String who;
     private String publishedAt;
     private String desc;
     private String type;
     private String url;
+    private String source;
     private boolean used;
     private String objectId;
     private String createdAt;
-    private String updatedAt;
 
     public void setWho(String who) {
         this.who = who;
@@ -51,8 +51,8 @@ public class ContentItem {
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public void setUsed(boolean used) {
@@ -95,7 +95,7 @@ public class ContentItem {
         return createdAt;
     }
 
-    public String getUpdatedAt() {
-        return updatedAt;
+    public String getSource() {
+        return source;
     }
 }

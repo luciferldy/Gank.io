@@ -1,4 +1,4 @@
-package com.gank.io.ui;
+package com.gank.io.ui.fragment;
 
 import android.content.Context;
 import android.net.Uri;
@@ -17,22 +17,34 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gank.io.R;
-import com.gank.io.util.ContentItem;
+import com.gank.io.model.ContentItem;
+import com.gank.io.presenter.BasePresenter;
+import com.gank.io.presenter.NewsPresenter;
+import com.gank.io.ui.view.IFragmentView;
+import com.gank.io.util.FragmentUtils;
 import com.gank.io.util.GetRss;
 import com.gank.io.util.ParseRss;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by lucifer on 16-1-5.
  */
-public class NewsContentFragment extends Fragment {
+public class NewsFragment extends Fragment implements IFragmentView{
 
-    private static final String LOG_TAG = NewsContentFragment.class.getSimpleName();
+    private static final String LOG_TAG = NewsFragment.class.getSimpleName();
     private HashMap<String, ArrayList<ContentItem>> mContents;
+    private BasePresenter presenter;
     private LinearLayout rssContent;
     private SimpleDraweeView rssImg;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initPresenter();
+    }
 
     @Nullable
     @Override
@@ -46,7 +58,7 @@ public class NewsContentFragment extends Fragment {
             year = bundle.getString("year");
             month = bundle.getString("month");
             day = bundle.getString("day");
-            new LoadContentTask().execute(year + "/" + month + "/" + day);
+            ((NewsPresenter) presenter).loadNews(year + "/" + month + "/" + day);
         }
         return root;
     }
@@ -56,34 +68,49 @@ public class NewsContentFragment extends Fragment {
         super.onDestroyView();
     }
 
-    private class LoadContentTask extends AsyncTask<String, Integer, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(String... strings) {
-            Log.d(LOG_TAG, "parameter is " + strings[0]);
-            String results = GetRss.getRssContent(strings[0]);
-            if (results == null) {
-                return false;
-            }
-            mContents = ParseRss.parseDailyContent(results);
-            if (mContents == null) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            if (aBoolean) {
-                Log.d(LOG_TAG, "rss content is " + mContents.toString());
-                setRssView();
-            } else {
-                Log.d(LOG_TAG, "get or parse daily content failed");
-            }
-        }
+    @Override
+    public void initPresenter() {
+        presenter = new NewsPresenter(getActivity(), this);
     }
 
-    // recycleView的适配器
+    @Override
+    public void onBackPressed() {
+        FragmentUtils.popBackStack(getActivity());
+    }
+
+    @Override
+    public void fillData(final List data) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mContents = (HashMap<String, ArrayList<ContentItem>>) data;
+                if (mContents.get(ContentItem.MEI_ZHI) != null) {
+                    mContents.get(ContentItem.MEI_ZHI).get(0);
+                    Uri imgUri = Uri.parse(mContents.get(ContentItem.MEI_ZHI).get(0).getUrl());
+                    rssImg.setImageURI(imgUri);
+                }
+                for (Map.Entry<String, ArrayList<ContentItem>> entry : mContents.entrySet()) {
+                    Log.d(LOG_TAG, "key: " + entry.getKey() + " value： " + entry.getValue());
+                    if (entry.getKey().equals(ContentItem.MEI_ZHI)) {
+                        continue;
+                    }
+                    TextView keyTv = new TextView(getContext());
+                    keyTv.setText(entry.getKey());
+                    rssContent.addView(keyTv);
+                    RecyclerView itemRv = new RecyclerView(getContext());
+                    itemRv.setLayoutManager(new WrappingLinearLayoutManager(getContext()));
+                    itemRv.setNestedScrollingEnabled(false);
+                    itemRv.setHasFixedSize(false);
+                    RssViewAdapter adapter = new RssViewAdapter(entry.getValue());
+                    itemRv.setAdapter(adapter);
+                    rssContent.addView(itemRv);
+                }
+            }
+        });
+
+    }
+
+    // recycleView 的适配器
     private class RssViewAdapter extends RecyclerView.Adapter<RssItemViewHolder>{
 
         private ArrayList<ContentItem> rssItem;
@@ -128,32 +155,7 @@ public class NewsContentFragment extends Fragment {
         }
     }
 
-    // 动态设置内容
-    private void setRssView() {
-        if (mContents.get(ContentItem.MEI_ZHI) != null) {
-            mContents.get(ContentItem.MEI_ZHI).get(0);
-            Uri imgUri = Uri.parse(mContents.get(ContentItem.MEI_ZHI).get(0).getUrl());
-            rssImg.setImageURI(imgUri);
-        }
-        for (Map.Entry<String, ArrayList<ContentItem>> entry : mContents.entrySet()) {
-            Log.d(LOG_TAG, "key: " + entry.getKey() + " value： " + entry.getValue());
-            if (entry.getKey().equals(ContentItem.MEI_ZHI)) {
-                continue;
-            }
-            TextView keyTv = new TextView(getContext());
-            keyTv.setText(entry.getKey());
-            rssContent.addView(keyTv);
-            RecyclerView itemRv = new RecyclerView(getContext());
-            itemRv.setLayoutManager(new WrappingLinearLayoutManager(getContext()));
-            itemRv.setNestedScrollingEnabled(false);
-            itemRv.setHasFixedSize(false);
-            RssViewAdapter adapter = new RssViewAdapter(entry.getValue());
-            itemRv.setAdapter(adapter);
-            rssContent.addView(itemRv);
-        }
-    }
-
-    // 自定义的LinearLayoutManager, 用作NestedScrollView中嵌套RecycleView
+    // 自定义的 LinearLayoutManager, 用作 NestedScrollView 中嵌套 RecycleView
     public class WrappingLinearLayoutManager extends LinearLayoutManager {
 
         public WrappingLinearLayoutManager(Context context) {

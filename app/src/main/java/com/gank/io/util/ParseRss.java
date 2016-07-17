@@ -1,5 +1,7 @@
 package com.gank.io.util;
 
+import com.gank.io.model.ContentItem;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,12 +24,13 @@ public class ParseRss {
             JSONObject totalData = new JSONObject(result);
             JSONObject myResults = totalData.getJSONObject(RESULTS);
             JSONArray myCategory = totalData.getJSONArray(CATEGORY);
-            // 种类初始化
+            // init
             HashMap<String, ArrayList<ContentItem>> mResults = new HashMap<>();
-            // 获取所有种类
+            // get all categories
             for (int i = 0; i < myCategory.length(); i++) {
                 JSONArray items = myResults.getJSONArray(myCategory.getString(i));
                 ArrayList<ContentItem> itemsList = new ArrayList<>();
+                // each categories has its items
                 for (int j = 0; j < items.length(); j++) {
                     JSONObject item = items.getJSONObject(j);
                     ContentItem contentItem = new ContentItem();
@@ -39,7 +42,7 @@ public class ParseRss {
                     contentItem.setUsed(item.getBoolean(ContentItem.USED));
                     contentItem.setObjectId(item.getString(ContentItem.OBJECT_ID));
                     contentItem.setCreatedAt(item.getString(ContentItem.CREATE_AT));
-                    contentItem.setUpdatedAt(item.getString(ContentItem.UPDATE_AT));
+                    contentItem.setSource(item.getString(ContentItem.SOURCE));
                     itemsList.add(contentItem);
                 }
                 mResults.put(myCategory.getString(i), itemsList);
@@ -56,7 +59,7 @@ public class ParseRss {
             JSONObject totalData = new JSONObject(result);
             JSONArray myResults = totalData.getJSONArray(RESULTS);
             HashMap<String, ArrayList<ContentItem>> mResults = new HashMap<>();
-            // 获取所有种类
+            // init
 
             ArrayList<ContentItem> itemsList = new ArrayList<>();
             for (int j = 0; j < myResults.length(); j++) {
@@ -70,7 +73,7 @@ public class ParseRss {
                 contentItem.setUsed(item.getBoolean(ContentItem.USED));
                 contentItem.setObjectId(item.getString(ContentItem.OBJECT_ID));
                 contentItem.setCreatedAt(item.getString(ContentItem.CREATE_AT));
-                contentItem.setUpdatedAt(item.getString(ContentItem.UPDATE_AT));
+                contentItem.setSource(item.getString(ContentItem.SOURCE));
                 itemsList.add(contentItem);
             }
             mResults.put(ContentItem.MEI_ZHI, itemsList);
