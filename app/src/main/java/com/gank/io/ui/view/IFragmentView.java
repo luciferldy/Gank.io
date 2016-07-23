@@ -1,13 +1,11 @@
 package com.gank.io.ui.view;
 
-import com.gank.io.model.ContentItem;
-
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created by Lucifer on 2016/7/16.
  */
-public interface IFragmentView<I extends ContentItem>  extends IBaseView{
+public interface IFragmentView extends IBaseView{
 
     void initPresenter();
 
@@ -16,5 +14,9 @@ public interface IFragmentView<I extends ContentItem>  extends IBaseView{
      */
     void onBackPressed();
 
-    void fillData(List<I> data);
+    /**
+     * fill the data
+     * @param data
+     */
+    void fillData(HashMap data);
 }

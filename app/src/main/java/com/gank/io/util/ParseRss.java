@@ -7,7 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by lucifer on 16-1-4.
@@ -24,8 +26,8 @@ public class ParseRss {
             JSONObject totalData = new JSONObject(result);
             JSONObject myResults = totalData.getJSONObject(RESULTS);
             JSONArray myCategory = totalData.getJSONArray(CATEGORY);
-            // init
-            HashMap<String, ArrayList<ContentItem>> mResults = new HashMap<>();
+            // init linkedhashmap
+            HashMap<String, ArrayList<ContentItem>> mResults = new LinkedHashMap<>();
             // get all categories
             for (int i = 0; i < myCategory.length(); i++) {
                 JSONArray items = myResults.getJSONArray(myCategory.getString(i));
@@ -35,13 +37,13 @@ public class ParseRss {
                     JSONObject item = items.getJSONObject(j);
                     ContentItem contentItem = new ContentItem();
                     contentItem.setWho(item.getString(ContentItem.WHO));
-                    contentItem.setPublishedAt(item.getString(ContentItem.PUBLISHED_AT));
+                    contentItem.setPublishedAt(DateUtils.toDate(item.getString(ContentItem.PUBLISHED_AT)));
                     contentItem.setDesc(item.getString(ContentItem.DESC));
                     contentItem.setType(item.getString(ContentItem.TYPE));
                     contentItem.setUrl(item.getString(ContentItem.URL));
                     contentItem.setUsed(item.getBoolean(ContentItem.USED));
                     contentItem.setObjectId(item.getString(ContentItem.OBJECT_ID));
-                    contentItem.setCreatedAt(item.getString(ContentItem.CREATE_AT));
+                    contentItem.setCreatedAt(DateUtils.toDate(item.getString(ContentItem.CREATE_AT)));
                     contentItem.setSource(item.getString(ContentItem.SOURCE));
                     itemsList.add(contentItem);
                 }
@@ -66,13 +68,13 @@ public class ParseRss {
                 JSONObject item = myResults.getJSONObject(j);
                 ContentItem contentItem = new ContentItem();
                 contentItem.setWho(item.getString(ContentItem.WHO));
-                contentItem.setPublishedAt(item.getString(ContentItem.PUBLISHED_AT));
+                contentItem.setPublishedAt(DateUtils.toDate(item.getString(ContentItem.PUBLISHED_AT)));
                 contentItem.setDesc(item.getString(ContentItem.DESC));
                 contentItem.setType(item.getString(ContentItem.TYPE));
                 contentItem.setUrl(item.getString(ContentItem.URL));
                 contentItem.setUsed(item.getBoolean(ContentItem.USED));
                 contentItem.setObjectId(item.getString(ContentItem.OBJECT_ID));
-                contentItem.setCreatedAt(item.getString(ContentItem.CREATE_AT));
+                contentItem.setCreatedAt(DateUtils.toDate(item.getString(ContentItem.CREATE_AT)));
                 contentItem.setSource(item.getString(ContentItem.SOURCE));
                 itemsList.add(contentItem);
             }

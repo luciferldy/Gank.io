@@ -15,6 +15,7 @@ import com.gank.io.model.ContentItem;
 import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.util.FragmentUtils;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -56,7 +57,7 @@ public class ImgPreviewFragment extends Fragment implements IFragmentView{
     }
 
     @Override
-    public void fillData(List data) {
+    public void fillData(HashMap data) {
 
     }
 }

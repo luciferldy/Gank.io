@@ -15,7 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.gank.io.R;
-import com.gank.io.adapter.NewsAdapter;
+import com.gank.io.ui.adapter.MainListAdapter;
 import com.gank.io.presenter.MainPresenter;
 import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.ui.view.IMainView;
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     private RecyclerView mNewsCon;
     private ArrayList<HashMap<String, String>> meiZhis;
     private MainPresenter presenter;
-    private NewsAdapter newsAdapter;
+    private MainListAdapter newsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mNewsCon = (RecyclerView)findViewById(R.id.news_container);
         mNewsCon.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
         meiZhis = new ArrayList<>();
-        newsAdapter = new NewsAdapter(meiZhis, this);
+        newsAdapter = new MainListAdapter(meiZhis, this);
         mNewsCon.setAdapter(newsAdapter);
         presenter = new MainPresenter(this, this);
         presenter.loadMeizhi();

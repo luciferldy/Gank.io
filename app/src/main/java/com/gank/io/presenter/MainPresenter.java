@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.gank.io.model.ContentItem;
 import com.gank.io.ui.view.IBaseView;
 import com.gank.io.ui.view.IMainView;
+import com.gank.io.util.DateUtils;
 import com.gank.io.util.GetRss;
 import com.gank.io.util.Logger;
 import com.gank.io.util.ParseRss;
@@ -38,7 +39,7 @@ public class MainPresenter extends BasePresenter {
                     Logger.i(TAG, "get meizhi img but no response.");
                     return;
                 }
-                Logger.i(TAG, "getMeizhiImg response=" + result);
+//                Logger.i(TAG, "getMeizhiImg response=" + result);
                 HashMap<String, ArrayList<ContentItem>> mParseResults = ParseRss.parseMezhi(result);
                 if (mParseResults == null || mParseResults.isEmpty()) {
                     Logger.i(TAG, "parse meizhi but no result.");
@@ -49,7 +50,8 @@ public class MainPresenter extends BasePresenter {
                 for (int i = 0; i < items.size(); i++) {
                     HashMap<String, String> item = new HashMap<>();
                     item.put(ContentItem.URL, items.get(i).getUrl());
-                    item.put(ContentItem.PUBLISHED_AT, items.get(i).getPublishedAt());
+                    item.put(ContentItem.PUBLISHED_AT, DateUtils.toDate(items.get(i).getPublishedAt()));
+                    Logger.i(TAG, "meizhi published at=" + DateUtils.toDate(items.get(i).getPublishedAt()));
                     item.put(ContentItem.DESC, items.get(i).getDesc());
                     meiZhis.add(item);
                 }

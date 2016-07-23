@@ -1,4 +1,4 @@
-package com.gank.io.adapter;
+package com.gank.io.ui.adapter;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,44 +28,44 @@ import java.util.HashMap;
 /**
  * Created by lucifer on 16-1-4.
  */
-public class NewsAdapter  extends RecyclerView.Adapter<NewsAdapter.NewsAdapterViewHolder> {
+public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainAdapterViewHolder> {
 
-    private static final String LOG_TAG = NewsAdapter.class.getSimpleName();
+    private static final String LOG_TAG = MainListAdapter.class.getSimpleName();
     private ArrayList<HashMap<String, String>> meiZhis;
     private AppCompatActivity mainActivity;
 
-    public NewsAdapter(ArrayList<HashMap<String, String>> meiZhis, AppCompatActivity activity) {
+    public MainListAdapter(ArrayList<HashMap<String, String>> meiZhis, AppCompatActivity activity) {
         this.meiZhis = meiZhis;
         this.mainActivity = activity;
     }
 
     @Override
-    public NewsAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MainAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater mLayoutInflater = LayoutInflater.from(parent.getContext());
         View root = mLayoutInflater.inflate(R.layout.news_item, parent, false);
         TextView newsDesc = (TextView)root.findViewById(R.id.news_desc);
         SimpleDraweeView newsImg = (SimpleDraweeView)root.findViewById(R.id.news_img);
-        NewsAdapterViewHolder navh = new NewsAdapterViewHolder(root);
+        MainAdapterViewHolder navh = new MainAdapterViewHolder(root);
         navh.newsDes = newsDesc;
         navh.newsImg = newsImg;
         return navh;
     }
 
     @Override
-    public void onBindViewHolder(NewsAdapterViewHolder holder, final int position) {
+    public void onBindViewHolder(MainAdapterViewHolder holder, final int position) {
         holder.newsDes.setText(meiZhis.get(position).get(ContentItem.DESC));
         holder.newsDes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String publishDate = meiZhis.get(position).get(ContentItem.PUBLISHED_AT);
                 // 下面方法总是抛出异常,2016-01-04T02:49:48.409Z最后一位Z解析出错
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 try {
                     Date date = dateFormat.parse(publishDate);
                     String year = (new SimpleDateFormat("yyyy")).format(date);
                     String month = (new SimpleDateFormat("MM")).format(date);
                     String day = (new SimpleDateFormat("dd")).format(date);
-                    Log.d(LOG_TAG, "year:" + year + " month:" + month + " day" + day);
+                    Log.d(LOG_TAG, "year=" + year + " month=" + month + " day=" + day);
                     FragmentManager manager = mainActivity.getSupportFragmentManager();
                     NewsFragment newsItem = new NewsFragment();
                     Bundle bundle = new Bundle();
@@ -78,7 +78,7 @@ public class NewsAdapter  extends RecyclerView.Adapter<NewsAdapter.NewsAdapterVi
                     transaction.addToBackStack(NewsFragment.class.getSimpleName() + System.currentTimeMillis());
                     transaction.commit();
                 } catch (ParseException e) {
-                    Log.d(LOG_TAG, "publish date is " + publishDate);
+                    Logger.i(LOG_TAG, "publish date is " + publishDate);
                     e.printStackTrace();
                 }
             }
@@ -106,12 +106,12 @@ public class NewsAdapter  extends RecyclerView.Adapter<NewsAdapter.NewsAdapterVi
         return meiZhis == null ? 0 : meiZhis.size();
     }
 
-    public static class NewsAdapterViewHolder extends RecyclerView.ViewHolder {
+    public static class MainAdapterViewHolder extends RecyclerView.ViewHolder {
 
         TextView newsDes;
         SimpleDraweeView newsImg;
 
-        NewsAdapterViewHolder(View view) {
+        MainAdapterViewHolder(View view) {
             super(view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

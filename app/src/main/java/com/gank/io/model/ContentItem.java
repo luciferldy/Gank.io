@@ -1,11 +1,14 @@
 package com.gank.io.model;
 
+import java.util.Date;
+
 /**
  * Created by lucifer on 16-1-5.
  */
 public class ContentItem {
 
     public static final String MEI_ZHI = "福利";
+    public static final String ANDROID = "Android";
 
     public static final String OBJECT_ID = "_id";
     public static final String CREATE_AT = "createdAt";
@@ -18,20 +21,21 @@ public class ContentItem {
     public static final String WHO = "who";
 
     private String who;
-    private String publishedAt;
+    private Date publishedAt;
     private String desc;
     private String type;
     private String url;
     private String source;
     private boolean used;
     private String objectId;
-    private String createdAt;
+    private Date createdAt;
+    private boolean isCategory = false;
 
     public void setWho(String who) {
         this.who = who;
     }
 
-    public void setPublishedAt(String publishedAt) {
+    public void setPublishedAt(Date publishedAt) {
         this.publishedAt = publishedAt;
     }
 
@@ -47,7 +51,7 @@ public class ContentItem {
         this.objectId = objectId;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -63,11 +67,15 @@ public class ContentItem {
         this.type = type;
     }
 
+    public void setIsCategory(boolean isCategory) {
+        this.isCategory = isCategory;
+    }
+
     public String getWho() {
         return who;
     }
 
-    public String getPublishedAt() {
+    public Date getPublishedAt() {
         return publishedAt;
     }
 
@@ -91,11 +99,28 @@ public class ContentItem {
         return objectId;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
     public String getSource() {
         return source;
+    }
+
+    public boolean isCategory() {
+        return isCategory;
+    }
+
+    @Override
+    public String toString() {
+        return OBJECT_ID + "=" + objectId + "\n"
+                + CREATE_AT + "=" + createdAt + "\n"
+                + DESC + desc + "=" + "\n"
+                + PUBLISHED_AT + "=" + publishedAt + "\n"
+                + SOURCE + "=" + source + "\n"
+                + TYPE + "=" + type + "\n"
+                + URL + "=" + url + "\n"
+                + USED + "=" + used + "\n"
+                + WHO + "=" + who;
     }
 }

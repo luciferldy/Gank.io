@@ -1,10 +1,12 @@
 package com.gank.io.presenter;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.gank.io.model.ContentItem;
 import com.gank.io.ui.view.IBaseView;
+import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.util.GetRss;
 import com.gank.io.util.Logger;
 import com.gank.io.util.ParseRss;
@@ -32,15 +34,18 @@ public class NewsPresenter extends BasePresenter {
             @Override
             public void run() {
                 String results = GetRss.getRssContent(date);
-                if (results == null) {
+                if (TextUtils.isEmpty(results)) {
                     Logger.i(TAG, "getRssContent but no response.");
                     return;
                 }
                 HashMap<String, ArrayList<ContentItem>> mContents  = ParseRss.parseDailyContent(results);
-                if (mContents == null) {
+                if (mContents == null || mContents.isEmpty()) {
                     Logger.i(TAG, "parseDailyContent but no result.");
                     return;
                 }
+                if (mView instanceof IFragmentView)
+                    ((IFragmentView) mView).fillData(mContents);
+
             }
         }).start();
 

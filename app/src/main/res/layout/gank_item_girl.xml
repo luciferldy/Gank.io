@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/iv_girl"
+        android:layout_width="match_parent"
+        android:layout_height="250dip"
+        app:actualImageScaleType="centerCrop"
+        app:placeholderImage="@drawable/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/tv_girl_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dip"
+        android:textColor="@color/md_white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        tools:visibility="visible"
+        tools:backgroud="@color/md_amber_200"
+        tools:text="2015年11月1日"/>
+
+</FrameLayout>
