@@ -1,7 +1,5 @@
 package com.gank.io.util;
 
-import android.util.Log;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,7 +15,7 @@ public class DateUtils {
 
     public static String toDate(Date date) {
         try {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
             return format.format(date);
         } catch (Exception e) {
             Logger.i(TAG, "date to string failed.");
@@ -30,7 +28,7 @@ public class DateUtils {
     public static Date toDate(String date) {
         Date mDate = new Date();
         try {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
             mDate = format.parse(date);
         } catch (ParseException e) {
             Logger.i(TAG, "string to date failed, string=" + date);

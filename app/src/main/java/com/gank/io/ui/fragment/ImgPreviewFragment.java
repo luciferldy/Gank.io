@@ -57,7 +57,7 @@ public class ImgPreviewFragment extends Fragment implements IFragmentView{
     }
 
     @Override
-    public void fillData(HashMap data) {
+    public void fillData(List data) {
 
     }
 }

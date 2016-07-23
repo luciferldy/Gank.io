@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gank.io.R;
 import com.gank.io.model.ContentItem;
@@ -16,10 +17,13 @@ import com.gank.io.util.DateUtils;
 import com.gank.io.util.Logger;
 import com.gank.io.util.StringStyleUtils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -44,7 +48,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     public NewsListAdapter(Context context) {
         this.mContext = context;
         items = new ArrayList<>();
-        items.add(getDefaultGankGirl());
     }
 
     @Override
@@ -63,13 +66,13 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     public ViewHolderItem onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
         if (viewType == EItemType.ITEM_TYPE_GIRL.ordinal()) {
-            view = LayoutInflater.from(mContext).inflate(R.layout.gank_item_girl, null);
+            view = LayoutInflater.from(mContext).inflate(R.layout.gank_item_girl, parent, false);
             return new ViewHolderItemGirl(view);
         } else if (viewType == EItemType.ITEM_TYPE_CATEGORY.ordinal()) {
-            view = LayoutInflater.from(mContext).inflate(R.layout.gank_item_category, null);
+            view = LayoutInflater.from(mContext).inflate(R.layout.gank_item_category, parent, false);
             return new ViewHolderItemCategory(view);
         } else {
-            view = LayoutInflater.from(mContext).inflate(R.layout.gank_item_normal, null);
+            view = LayoutInflater.from(mContext).inflate(R.layout.gank_item_normal, parent, false);
             return new ViewHolderItemNormal(view);
         }
     }
@@ -86,36 +89,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
 
     /**
      * 外部调用，刷新数据
-     * @param map
+     * @param list
      */
-    public void updateData(HashMap<String, ArrayList<ContentItem>> map) {
+    public void updateData(ArrayList<ContentItem> list) {
 
         items.clear();
+        items.addAll(list);
+        notifyDataSetChanged();
 
-        for (Map.Entry entry : map.entrySet()) {
-
-            // if item has gank meizhi
-            if (entry.getKey().toString().equals(ContentItem.MEI_ZHI)) {
-                for (ContentItem i : (ArrayList<ContentItem>) entry.getValue()) {
-                    i.setIsCategory(false);
-                    items.add(0, i);
-                }
-                continue;
-            }
-
-            // set the category title
-            ContentItem item = new ContentItem();
-            item.setType(entry.getKey().toString());
-            item.setIsCategory(true);
-            items.add(item);
-
-            for (ContentItem i : (ArrayList<ContentItem>) entry.getValue()) {
-                i.setIsCategory(false);
-                items.add(i);
-            }
-
-            notifyDataSetChanged();
-        }
     }
 
 
@@ -184,8 +165,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         @Override
         void bindItem(Context context, final ContentItem item) {
             Logger.i(TAG, "view holder bindItem item=" + item.toString());
-            mTvTime.setText(DateUtils.toDate(item.getPublishedAt()));
-            mGirlView.setImageURI(Uri.parse(item.getUrl()));
+            Date date = item.getPublishedAt();
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            mTvTime.setText(format.format(date));
+            Uri uri = Uri.parse(item.getUrl());
+            mGirlView.setImageURI(uri);
             mGirlView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -216,13 +200,5 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
          */
         void onClickGankItemNormal(ContentItem item, View view);
 
-    }
-
-    private ContentItem getDefaultGankGirl() {
-        ContentItem item = new ContentItem();
-        item.setPublishedAt(new Date(System.currentTimeMillis()));
-        item.setUrl("");
-        item.setType(ContentItem.MEI_ZHI);
-        return item;
     }
 }

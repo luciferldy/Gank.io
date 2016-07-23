@@ -1,7 +1,5 @@
 package com.gank.io.util;
 
-import android.util.Log;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +12,7 @@ import java.net.URL;
  */
 public class GetRss {
 
-    private static final String TAG = GetRss.class.getSimpleName();
+    private static final String LOG_TAG = GetRss.class.getSimpleName();
     private static final String API_URL = "http://gank.io/api/day/";
     private static final String API_MEIZHI_URL = "http://gank.io/api/data/%E7%A6%8F%E5%88%A9/";
 
@@ -28,7 +26,7 @@ public class GetRss {
             if (urlCon.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 return getStringFromInputStream(urlCon.getInputStream());
             } else {
-                Logger.i(TAG, "request rss content failed");
+                Logger.i(LOG_TAG, "request rss content failed");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -48,7 +46,7 @@ public class GetRss {
             if (urlCon.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 return getStringFromInputStream(urlCon.getInputStream());
             } else {
-                Logger.i(TAG, "request rss mezhi image failed");
+                Logger.i(LOG_TAG, "request rss mezhi image failed");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();

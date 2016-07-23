@@ -38,7 +38,7 @@ public class NewsPresenter extends BasePresenter {
                     Logger.i(TAG, "getRssContent but no response.");
                     return;
                 }
-                HashMap<String, ArrayList<ContentItem>> mContents  = ParseRss.parseDailyContent(results);
+                ArrayList<ContentItem> mContents  = ParseRss.parseDailyContent(results);
                 if (mContents == null || mContents.isEmpty()) {
                     Logger.i(TAG, "parseDailyContent but no result.");
                     return;

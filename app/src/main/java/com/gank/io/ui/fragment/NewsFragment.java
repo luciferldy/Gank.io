@@ -19,6 +19,7 @@ import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.util.FragmentUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by lucifer on 16-1-5.
@@ -44,6 +45,18 @@ public class NewsFragment extends Fragment implements IFragmentView{
         mRvGank = (RecyclerView) root.findViewById(R.id.rv_gank);
         mRvGank.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvAdapter = new NewsListAdapter(getContext());
+        NewsListAdapter.IClickNewsItem clickNewsItem = new NewsListAdapter.IClickNewsItem() {
+            @Override
+            public void onClickGankItemGirl(ContentItem item, View viewImg, View viewText) {
+
+            }
+
+            @Override
+            public void onClickGankItemNormal(ContentItem item, View view) {
+
+            }
+        };
+        mRvAdapter.setIClickItem(clickNewsItem);
         mRvGank.setAdapter(mRvAdapter);
         Bundle bundle = getArguments();
         String year, month, day;
@@ -73,11 +86,11 @@ public class NewsFragment extends Fragment implements IFragmentView{
     }
 
     @Override
-    public void fillData(final HashMap data) {
+    public void fillData(final List data) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mRvAdapter.updateData(data);
+                mRvAdapter.updateData((ArrayList<ContentItem>) data);
             }
         });
 

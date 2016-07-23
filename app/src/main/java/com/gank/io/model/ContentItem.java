@@ -115,7 +115,7 @@ public class ContentItem {
     public String toString() {
         return OBJECT_ID + "=" + objectId + "\n"
                 + CREATE_AT + "=" + createdAt + "\n"
-                + DESC + desc + "=" + "\n"
+                + DESC + "=" + desc + "\n"
                 + PUBLISHED_AT + "=" + publishedAt + "\n"
                 + SOURCE + "=" + source + "\n"
                 + TYPE + "=" + type + "\n"
