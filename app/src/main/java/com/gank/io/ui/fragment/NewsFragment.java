@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -67,6 +68,12 @@ public class NewsFragment extends Fragment implements IFragmentView{
             if (presenter instanceof NewsPresenter)
                 ((NewsPresenter) presenter).loadNews(year + "/" + month + "/" + day);
         }
+        root.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
         return root;
     }
 

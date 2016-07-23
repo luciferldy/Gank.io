@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -34,6 +35,12 @@ public class ImgPreviewFragment extends Fragment implements IFragmentView{
             url = bundle.getString(ContentItem.URL);
         }
         View root = inflater.inflate(R.layout.meizhi_preview, container, false);
+        root.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
         meizhiimg = (SimpleDraweeView) root.findViewById(R.id.meizhi_preview_img);
         Uri uri = Uri.parse(url);
         meizhiimg.setImageURI(uri);
