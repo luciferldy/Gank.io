@@ -19,6 +19,8 @@ import java.util.HashMap;
 public class MainPresenter extends BasePresenter {
 
     private static final String TAG = MainPresenter.class.getSimpleName();
+    private static final int REQUEST_COUNT = 10; // 请求次数
+    private static int mPageNumber = 1; // 第几页，初始值为1，自增，可以大于请求次数
 
     public MainPresenter(Activity context, IBaseView view) {
         super(context, view);

@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,7 +56,14 @@ public class NewsFragment extends Fragment implements IFragmentView{
 
             @Override
             public void onClickGankItemNormal(ContentItem item, View view) {
-
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                WebFragment fragment = new WebFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(ContentItem.URL, item.getUrl());
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.add(android.R.id.content, fragment);
+                transaction.addToBackStack(WebFragment.class.getSimpleName() + System.currentTimeMillis());
+                transaction.commit();
             }
         };
         mRvAdapter.setIClickItem(clickNewsItem);

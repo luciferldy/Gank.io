@@ -1,9 +1,14 @@
 package com.gank.io.ui.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -22,6 +27,7 @@ import java.util.List;
 public class WebFragment extends Fragment implements IFragmentView {
 
     private WebView mWvContent;
+    private String mUrl;
 
     @Nullable
     @Override
@@ -32,13 +38,27 @@ public class WebFragment extends Fragment implements IFragmentView {
         mWvContent.setWebViewClient(new CustomWebViewClient());
         Bundle bundle = getArguments();
         if (bundle.isEmpty()) {
-            String url = bundle.getString(ContentItem.URL);
-            mWvContent.loadUrl(url);
+            mUrl = bundle.getString(ContentItem.URL);
+            mWvContent.loadUrl(mUrl);
         }
         return root;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_web, menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.web_content) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
+            startActivity(intent);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public void initPresenter() {
