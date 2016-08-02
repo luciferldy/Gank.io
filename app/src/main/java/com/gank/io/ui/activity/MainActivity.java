@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -30,13 +31,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IMainView {
+public class MainActivity extends ISwipeRefreshActivity implements IMainView {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRvMeizhi;
     private MainPresenter mPresenter;
     private MainListAdapter mAdapter;
     private MainListAdapter.IClickMainItem mClickItem;
+    private MainPresenter.LoadCallback mLoadCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        initRefreshLayout((SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout));
+
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,9 +60,28 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         });
 
         mRvMeizhi = (RecyclerView)findViewById(R.id.rv_meizhi);
-        mRvMeizhi.setLayoutManager(new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL));
+        final StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL);
+        mRvMeizhi.setLayoutManager(layoutManager);
         mAdapter = new MainListAdapter(getBaseContext());
         mRvMeizhi.setAdapter(mAdapter);
+        mRvMeizhi.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    boolean isBottom = layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1] >= mAdapter.getItemCount() - 4;
+                    if (!mSwipeRefreshLayout.isRefreshing() && isBottom) {
+                        showRefresh();
+                        mPresenter.loadMeizhi(true, mLoadCallback);
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
         mClickItem = new MainListAdapter.IClickMainItem() {
             @Override
             public void onClickGankItem(ContentItem item) {
@@ -100,7 +123,28 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         };
         mAdapter.setClickItem(mClickItem);
         mPresenter = new MainPresenter(this, this);
-        mPresenter.loadMeizhi();
+        mLoadCallback = new MainPresenter.LoadCallback() {
+            @Override
+            public void onLoadSuccess() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+
+            @Override
+            public void onLoadFailed() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        };
+        mPresenter.loadMeizhi(false, mLoadCallback);
     }
 
     @Override
@@ -142,8 +186,6 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         super.onBackPressed();
     }
 
-
-
     @Override
     public void fillData(final List data) {
         Logger.i(LOG_TAG, "fillData");
@@ -157,8 +199,14 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     }
 
     @Override
-    public void appendMoreData(List data) {
-
+    public void appendMoreData(final List data) {
+        Logger.i(LOG_TAG, "appendMoreDate");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.appendData(data);
+            }
+        });
     }
 
     @Override
@@ -166,5 +214,10 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     }
 
-
+    @Override
+    protected void onRefreshStart() {
+        super.onRefreshStart();
+        Logger.i(LOG_TAG, "onRefresh");
+        mPresenter.loadMeizhi(false, mLoadCallback);
+    }
 }

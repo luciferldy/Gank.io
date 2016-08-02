@@ -29,27 +29,53 @@ public class MainPresenter extends BasePresenter {
     /**
      * load meizhi pic
      */
-    public synchronized void loadMeizhi() {
+    public synchronized void loadMeizhi(final boolean loadMore, final LoadCallback callback) {
         // 网络访问请求妹纸图片
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Logger.i(TAG, "loadMeizhi");
-                String result = GetRss.getMeizhiImg("10/1");
+                if (loadMore) {
+                    mPageNumber++;
+                } else {
+                    mPageNumber = 1;
+                }
+                String result = GetRss.getMeizhiImg(REQUEST_COUNT + "/" + mPageNumber);
                 if (TextUtils.isEmpty(result)) {
                     Logger.i(TAG, "get meizhi img but no response.");
+                    callback.onLoadFailed();
                     return;
                 }
 //                Logger.i(TAG, "getMeizhiImg response=" + result);
                 ArrayList<ContentItem> items = ParseRss.parseMeizhi(result);
                 if (items == null || items.isEmpty()) {
                     Logger.i(TAG, "parse meizhi but no result.");
+                    callback.onLoadFailed();
                     return;
                 }
-                if (mView instanceof IMainView)
-                    ((IMainView) mView).fillData(items);
+                if (mView instanceof IMainView) {
+                    callback.onLoadSuccess();
+                    if (loadMore)
+                        ((IMainView) mView).fillData(items);
+                    else {
+                        ((IMainView) mView).appendMoreData(items);
+                    }
+                } else {
+                    callback.onLoadFailed();
+                }
+
             }
         }).start();
+    }
+
+    /**
+     * 请求妹纸信息的回调，用来控制 swiperefreshlayout
+     */
+    public interface LoadCallback {
+
+        void onLoadSuccess();
+
+        void onLoadFailed();
     }
 
 }

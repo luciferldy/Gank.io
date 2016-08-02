@@ -24,12 +24,10 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainAd
 
     private static final String LOG_TAG = MainListAdapter.class.getSimpleName();
     private ArrayList<ContentItem> mMeizhis;
-    private Context mContext;
     private IClickMainItem mIClickItem;
 
     public MainListAdapter(Context context) {
         this.mMeizhis = new ArrayList<>();
-        this.mContext = context;
     }
 
     @Override
@@ -65,6 +63,10 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainAd
         return mMeizhis == null ? 0 : mMeizhis.size();
     }
 
+    /**
+     * 更新数据
+     * @param data
+     */
     public void update(List data) {
         mMeizhis.clear();
         try {
@@ -74,7 +76,20 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainAd
             Logger.i(LOG_TAG, "update meet class cast error.");
             e.printStackTrace();
         }
+    }
 
+    /**
+     * 填充新的数据
+     * @param data
+     */
+    public void appendData(List data) {
+        try {
+            mMeizhis.addAll(data);
+            notifyDataSetChanged();
+        } catch (Exception e) {
+            Logger.i(LOG_TAG, "appendData occur an error.");
+            e.printStackTrace();
+        }
     }
 
     public void setClickItem(IClickMainItem clickItem) {
