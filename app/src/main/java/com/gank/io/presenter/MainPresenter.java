@@ -21,6 +21,7 @@ public class MainPresenter extends BasePresenter {
     private static final String TAG = MainPresenter.class.getSimpleName();
     private static final int REQUEST_COUNT = 10; // 请求次数
     private static int mPageNumber = 1; // 第几页，初始值为1，自增，可以大于请求次数
+    private static boolean isLoadingData = false;
 
     public MainPresenter(Activity context, IBaseView view) {
         super(context, view);
@@ -35,6 +36,7 @@ public class MainPresenter extends BasePresenter {
             @Override
             public void run() {
                 Logger.i(TAG, "loadMeizhi");
+                isLoadingData = true;
                 if (loadMore) {
                     mPageNumber++;
                 } else {
@@ -44,6 +46,7 @@ public class MainPresenter extends BasePresenter {
                 if (TextUtils.isEmpty(result)) {
                     Logger.i(TAG, "get meizhi img but no response.");
                     callback.onLoadFailed();
+                    isLoadingData = false;
                     return;
                 }
 //                Logger.i(TAG, "getMeizhiImg response=" + result);
@@ -51,11 +54,12 @@ public class MainPresenter extends BasePresenter {
                 if (items == null || items.isEmpty()) {
                     Logger.i(TAG, "parse meizhi but no result.");
                     callback.onLoadFailed();
+                    isLoadingData = false;
                     return;
                 }
                 if (mView instanceof IMainView) {
                     callback.onLoadSuccess();
-                    if (loadMore)
+                    if (!loadMore)
                         ((IMainView) mView).fillData(items);
                     else {
                         ((IMainView) mView).appendMoreData(items);
@@ -63,9 +67,13 @@ public class MainPresenter extends BasePresenter {
                 } else {
                     callback.onLoadFailed();
                 }
-
+                isLoadingData = false;
             }
         }).start();
+    }
+
+    public boolean isLoadingData() {
+        return isLoadingData;
     }
 
     /**

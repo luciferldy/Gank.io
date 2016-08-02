@@ -18,6 +18,7 @@ import com.gank.io.R;
 import com.gank.io.model.ContentItem;
 import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.util.FragmentUtils;
+import com.gank.io.util.Logger;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ import java.util.List;
  */
 public class WebFragment extends Fragment implements IFragmentView {
 
+    private static final String LOG_TAG = WebFragment.class.getSimpleName();
     private WebView mWvContent;
     private String mUrl;
 
@@ -37,9 +39,11 @@ public class WebFragment extends Fragment implements IFragmentView {
         mWvContent.getSettings().setJavaScriptEnabled(true);
         mWvContent.setWebViewClient(new CustomWebViewClient());
         Bundle bundle = getArguments();
-        if (bundle.isEmpty()) {
+        if (bundle != null && bundle.isEmpty()) {
             mUrl = bundle.getString(ContentItem.URL);
             mWvContent.loadUrl(mUrl);
+        } else {
+            Logger.i(LOG_TAG, "bundle is null or bundle is empty.");
         }
         return root;
     }

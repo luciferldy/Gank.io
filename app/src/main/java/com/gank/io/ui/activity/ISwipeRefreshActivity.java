@@ -16,12 +16,17 @@ public abstract class ISwipeRefreshActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     *  初始化刷新控件
+     * @param view
+     */
     public void initRefreshLayout(SwipeRefreshLayout view) {
         mSwipeRefreshLayout = view;
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if (prepareRefresh()) {
+                    // 下拉刷新时滚动条一直会存在，只可以手动关闭，这里不需要进行 showRefresh() 操作
                     onRefreshStart();
                 } else {
                     hideRefresh();

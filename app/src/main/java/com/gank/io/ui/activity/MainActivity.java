@@ -25,11 +25,13 @@ import com.gank.io.ui.fragment.ImgPreviewFragment;
 import com.gank.io.ui.fragment.NewsFragment;
 import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.ui.view.IMainView;
+import com.gank.io.util.DateUtils;
 import com.gank.io.util.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends ISwipeRefreshActivity implements IMainView {
 
@@ -70,6 +72,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     boolean isBottom = layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1] >= mAdapter.getItemCount() - 4;
+                    Logger.i(LOG_TAG, "slide to the bottom, ready to load more data.");
                     if (!mSwipeRefreshLayout.isRefreshing() && isBottom) {
                         showRefresh();
                         mPresenter.loadMeizhi(true, mLoadCallback);
@@ -79,6 +82,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                // 在滚动过程中会不停的判断，会影响性能
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
@@ -87,16 +91,16 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
             public void onClickGankItem(ContentItem item) {
                 try {
                     Date date = item.getPublishedAt();
-                    String year = (new SimpleDateFormat("yyyy")).format(date);
-                    String month = (new SimpleDateFormat("MM")).format(date);
-                    String day = (new SimpleDateFormat("dd")).format(date);
-                    Log.d(LOG_TAG, "year=" + year + " month=" + month + " day=" + day);
+                    String year = (new SimpleDateFormat("yyyy", Locale.US)).format(date);
+                    String month = (new SimpleDateFormat("MM", Locale.US)).format(date);
+                    String day = (new SimpleDateFormat("dd", Locale.US)).format(date);
+                    Log.d(LOG_TAG, DateUtils.YEAR + "=" + year + " " + DateUtils.MONTH + "=" + month + " " + DateUtils.DAY + "=" + day);
                     FragmentManager manager = getSupportFragmentManager();
                     NewsFragment newsItem = new NewsFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putString("year", year);
-                    bundle.putString("month", month);
-                    bundle.putString("day", day);
+                    bundle.putString(DateUtils.YEAR, year);
+                    bundle.putString(DateUtils.MONTH, month);
+                    bundle.putString(DateUtils.DAY, day);
                     newsItem.setArguments(bundle);
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.add(android.R.id.content, newsItem);
@@ -129,7 +133,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mSwipeRefreshLayout.setRefreshing(false);
+                        hideRefresh();
                     }
                 });
             }
@@ -139,7 +143,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mSwipeRefreshLayout.setRefreshing(false);
+                        hideRefresh();
                     }
                 });
             }
@@ -212,6 +216,11 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
     @Override
     public void hasNoMoreData() {
 
+    }
+
+    @Override
+    protected boolean prepareRefresh() {
+        return mPresenter.isLoadingData();
     }
 
     @Override

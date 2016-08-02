@@ -13,6 +13,15 @@ public class DateUtils {
 
     private static String TAG = DateUtils.class.getSimpleName();
 
+    public static final String YEAR = "year";
+    public static final String MONTH ="month";
+    public static final String DAY = "day";
+
+    /**
+     * Date to String
+     * @param date
+     * @return
+     */
     public static String toDate(Date date) {
         try {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
@@ -25,6 +34,11 @@ public class DateUtils {
 
     }
 
+    /**
+     * String to Date
+     * @param date
+     * @return
+     */
     public static Date toDate(String date) {
         Date mDate = new Date();
         try {

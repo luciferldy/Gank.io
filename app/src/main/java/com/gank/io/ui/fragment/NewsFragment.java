@@ -20,6 +20,7 @@ import com.gank.io.presenter.BasePresenter;
 import com.gank.io.presenter.NewsPresenter;
 import com.gank.io.ui.adapter.NewsListAdapter;
 import com.gank.io.ui.view.IFragmentView;
+import com.gank.io.util.DateUtils;
 import com.gank.io.util.FragmentUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ import java.util.List;
 public class NewsFragment extends Fragment implements IFragmentView{
 
     private static final String LOG_TAG = NewsFragment.class.getSimpleName();
-    private HashMap<String, ArrayList<ContentItem>> mContents;
     private BasePresenter presenter;
     private RecyclerView mRvGank;
     private NewsListAdapter mRvAdapter;
@@ -62,6 +62,7 @@ public class NewsFragment extends Fragment implements IFragmentView{
                 WebFragment fragment = new WebFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(ContentItem.URL, item.getUrl());
+                fragment.setArguments(bundle);
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.add(android.R.id.content, fragment);
                 transaction.addToBackStack(WebFragment.class.getSimpleName() + System.currentTimeMillis());
@@ -73,9 +74,9 @@ public class NewsFragment extends Fragment implements IFragmentView{
         Bundle bundle = getArguments();
         String year, month, day;
         if (bundle != null) {
-            year = bundle.getString("year");
-            month = bundle.getString("month");
-            day = bundle.getString("day");
+            year = bundle.getString(DateUtils.YEAR);
+            month = bundle.getString(DateUtils.MONTH);
+            day = bundle.getString(DateUtils.DAY);
             if (presenter instanceof NewsPresenter)
                 ((NewsPresenter) presenter).loadNews(year + "/" + month + "/" + day);
         }
