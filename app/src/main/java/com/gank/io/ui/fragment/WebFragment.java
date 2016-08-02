@@ -39,7 +39,7 @@ public class WebFragment extends Fragment implements IFragmentView {
         mWvContent.getSettings().setJavaScriptEnabled(true);
         mWvContent.setWebViewClient(new CustomWebViewClient());
         Bundle bundle = getArguments();
-        if (bundle != null && bundle.isEmpty()) {
+        if (bundle != null && !bundle.isEmpty()) {
             mUrl = bundle.getString(ContentItem.URL);
             mWvContent.loadUrl(mUrl);
         } else {

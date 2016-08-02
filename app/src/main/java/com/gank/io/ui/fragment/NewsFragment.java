@@ -22,6 +22,8 @@ import com.gank.io.ui.adapter.NewsListAdapter;
 import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.util.DateUtils;
 import com.gank.io.util.FragmentUtils;
+import com.gank.io.util.Logger;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +64,7 @@ public class NewsFragment extends Fragment implements IFragmentView{
                 WebFragment fragment = new WebFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(ContentItem.URL, item.getUrl());
+                Logger.i(LOG_TAG, ContentItem.URL + "=" + item.getUrl());
                 fragment.setArguments(bundle);
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.add(android.R.id.content, fragment);
