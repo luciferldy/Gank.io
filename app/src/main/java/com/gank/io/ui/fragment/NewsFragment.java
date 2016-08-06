@@ -1,6 +1,6 @@
 package com.gank.io.ui.fragment;
 
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.gank.io.R;
 import com.gank.io.model.ContentItem;
@@ -20,24 +21,24 @@ import com.gank.io.presenter.BasePresenter;
 import com.gank.io.presenter.NewsPresenter;
 import com.gank.io.ui.adapter.NewsListAdapter;
 import com.gank.io.ui.view.IFragmentView;
+import com.gank.io.util.CommonUtils;
 import com.gank.io.util.DateUtils;
 import com.gank.io.util.FragmentUtils;
 import com.gank.io.util.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by lucifer on 16-1-5.
  */
-public class NewsFragment extends Fragment implements IFragmentView{
+public class NewsFragment extends ISwipeRefreshFragment{
 
     private static final String LOG_TAG = NewsFragment.class.getSimpleName();
     private BasePresenter presenter;
     private RecyclerView mRvGank;
     private NewsListAdapter mRvAdapter;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private String mPublishDate;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +50,15 @@ public class NewsFragment extends Fragment implements IFragmentView{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.news_content, container, false);
+        // 在 4.4 之上的 Fragment 需要对此进行适配
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Logger.i(LOG_TAG, root.toString());
+            int top = root.getPaddingTop() == 0 ? CommonUtils.getStatusbarHeight(getContext()) : root.getPaddingTop() + CommonUtils.getStatusbarHeight(getContext());
+            int left = root.getPaddingLeft();
+            int right = root.getPaddingRight();
+            int bottom = root.getPaddingBottom();
+            root.setPadding(left, top, right, bottom);
+        }
         mRvGank = (RecyclerView) root.findViewById(R.id.rv_gank);
         mRvGank.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvAdapter = new NewsListAdapter(getContext());
@@ -74,18 +84,19 @@ public class NewsFragment extends Fragment implements IFragmentView{
         };
         mRvAdapter.setIClickItem(clickNewsItem);
         mRvGank.setAdapter(mRvAdapter);
+        initRefreshLayout((SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh_layout));
         Bundle bundle = getArguments();
         String year, month, day;
         if (bundle != null) {
             year = bundle.getString(DateUtils.YEAR);
             month = bundle.getString(DateUtils.MONTH);
             day = bundle.getString(DateUtils.DAY);
-            if (presenter instanceof NewsPresenter)
-                ((NewsPresenter) presenter).loadNews(year + "/" + month + "/" + day);
+            mPublishDate = year + "/" + month + "/" + day;
+            if (presenter instanceof NewsPresenter) {
+                showRefresh();
+                ((NewsPresenter) presenter).loadNews(mPublishDate);
+            }
         }
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh_layout);
-        mSwipeRefreshLayout.setEnabled(false);
 
         root.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -94,6 +105,12 @@ public class NewsFragment extends Fragment implements IFragmentView{
             }
         });
         return root;
+    }
+
+    @Override
+    protected void onRefreshStart() {
+        super.onRefreshStart();
+        ((NewsPresenter) presenter).loadNews(mPublishDate);
     }
 
     @Override
@@ -117,8 +134,13 @@ public class NewsFragment extends Fragment implements IFragmentView{
             @Override
             public void run() {
                 mRvAdapter.updateData((ArrayList<ContentItem>) data);
+                hideRefresh();
             }
         });
+    }
 
+    @Override
+    protected boolean prepareRefresh() {
+        return ((NewsPresenter)presenter).isLoading();
     }
 }

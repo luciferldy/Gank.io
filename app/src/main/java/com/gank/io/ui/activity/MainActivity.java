@@ -71,9 +71,14 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    // 测试时使用的 log, lastVisibleItemPositions 返回的最后一个可见的 item 的位置, lastCompletelyVisibleItemPositions 返回的是最后一个完全可见的 item 的位置.
+//                    int[] visiblePos = layoutManager.findLastVisibleItemPositions(new int[2]);
+//                    Logger.i(LOG_TAG, "last visible position is " + visiblePos[0] + ", " + visiblePos[1]);
+//                    int[] compVisiPos = layoutManager.findLastCompletelyVisibleItemPositions(new int[2]);
+//                    Logger.i(LOG_TAG, "last completely visible position is " + compVisiPos[0] + ", " + compVisiPos[1]);
                     boolean isBottom = layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1] >= mAdapter.getItemCount() - 4;
-                    Logger.i(LOG_TAG, "slide to the bottom, ready to load more data.");
                     if (!mSwipeRefreshLayout.isRefreshing() && isBottom) {
+                        Logger.i(LOG_TAG, "slide to the bottom and no refreshing, ready to load more data.");
                         showRefresh();
                         mPresenter.loadMeizhi(true, mLoadCallback);
                     }
@@ -154,7 +159,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -211,11 +216,6 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
                 mAdapter.appendData(data);
             }
         });
-    }
-
-    @Override
-    public void hasNoMoreData() {
-
     }
 
     @Override

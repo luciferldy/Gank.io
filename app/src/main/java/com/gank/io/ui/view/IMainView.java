@@ -13,7 +13,4 @@ public interface IMainView<T extends ContentItem> extends IBaseView{
     void fillData(List<T> data);
 
     void appendMoreData(List<T> data);
-
-    void hasNoMoreData();
-
 }

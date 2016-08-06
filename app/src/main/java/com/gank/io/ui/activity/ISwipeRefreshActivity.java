@@ -59,19 +59,4 @@ public abstract class ISwipeRefreshActivity extends AppCompatActivity implements
             }
         }, 700);
     }
-
-    @Override
-    public void showEmptyView() {
-
-    }
-
-    @Override
-    public void getDataFinish() {
-
-    }
-
-    @Override
-    public void showErrorView(Throwable throwable) {
-
-    }
 }

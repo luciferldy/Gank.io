@@ -5,12 +5,6 @@ package com.gank.io.ui.view;
  */
 public interface IRefreshView extends IBaseView{
 
-    void getDataFinish();
-
-    void showEmptyView();
-
-    void showErrorView(Throwable throwable);
-
     void showRefresh();
 
     void hideRefresh();

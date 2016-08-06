@@ -14,8 +14,12 @@ import com.gank.io.R;
 import com.gank.io.model.ContentItem;
 import com.gank.io.util.Logger;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by lucifer on 16-1-4.
@@ -41,7 +45,18 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainAd
     @Override
     public void onBindViewHolder(MainAdapterViewHolder holder, final int position) {
         final ContentItem item = mMeizhis.get(position);
-        holder.newsDes.setText(item.getDesc());
+        // 改成发布时间
+        Date date = item.getPublishedAt();
+        String str;
+        try {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+            str = format.format(date);
+        } catch (Exception e) {
+            Logger.i(LOG_TAG, "Date cast to String occur exception.");
+            e.printStackTrace();
+            str = item.getDesc();
+        }
+        holder.newsDes.setText(str);
         holder.newsDes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
