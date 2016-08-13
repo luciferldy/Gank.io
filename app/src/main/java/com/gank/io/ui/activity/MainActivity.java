@@ -56,7 +56,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Do u want know me ?", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -153,7 +153,8 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
                 });
             }
         };
-        mPresenter.loadMeizhi(false, mLoadCallback);
+//        mPresenter.loadMeizhi(false, mLoadCallback);
+        mPresenter.getMeizhiRetrofit(false);
     }
 
     @Override

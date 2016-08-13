@@ -1,5 +1,7 @@
 package com.gank.io.model;
 
+import com.gank.io.util.DateUtils;
+
 import java.util.Date;
 
 /**
@@ -109,6 +111,18 @@ public class ContentItem {
 
     public boolean isCategory() {
         return isCategory;
+    }
+
+    public void setJsonBean(GirlJson.ResultsBean bean) {
+        this.objectId = bean.get_id();
+        this.createdAt = DateUtils.toDate(bean.getCreatedAt().trim());
+        this.desc = bean.getDesc();
+        this.publishedAt = DateUtils.toDate(bean.getPublishedAt().trim());
+        this.source = bean.getSource();
+        this.type = bean.getType();
+        this.url = bean.getUrl();
+        this.used = bean.isUsed();
+        this.who = bean.getWho();
     }
 
     @Override

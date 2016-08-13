@@ -47,12 +47,7 @@ public class WebFragment extends ISwipeRefreshFragment {
         View root = inflater.inflate(R.layout.web_content, container, false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Logger.i(LOG_TAG, root.toString());
-            int top = root.getPaddingTop() == 0 ? CommonUtils.getStatusbarHeight(getContext()) : root.getPaddingTop() + CommonUtils.getStatusbarHeight(getContext());
-            int left = root.getPaddingLeft();
-            int right = root.getPaddingRight();
-            int bottom = root.getPaddingBottom();
-            root.setPadding(left, top, right, bottom);
+            Logger.i(LOG_TAG, "沉浸式");
         }
 
         setHasOptionsMenu(true);

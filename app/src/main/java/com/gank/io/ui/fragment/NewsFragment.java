@@ -3,16 +3,21 @@ package com.gank.io.ui.fragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.gank.io.R;
@@ -52,13 +57,18 @@ public class NewsFragment extends ISwipeRefreshFragment{
         View root = inflater.inflate(R.layout.news_content, container, false);
         // 在 4.4 之上的 Fragment 需要对此进行适配
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Logger.i(LOG_TAG, root.toString());
-            int top = root.getPaddingTop() == 0 ? CommonUtils.getStatusbarHeight(getContext()) : root.getPaddingTop() + CommonUtils.getStatusbarHeight(getContext());
-            int left = root.getPaddingLeft();
-            int right = root.getPaddingRight();
-            int bottom = root.getPaddingBottom();
-            root.setPadding(left, top, right, bottom);
+                Logger.i(LOG_TAG, "沉浸式");
+//                AppBarLayout layout = (AppBarLayout) root.findViewById(R.id.toolbar_layout);
+//                int top = root.getPaddingTop() == 0 ? CommonUtils.getStatusbarHeight(getContext()) : root.getPaddingTop() + CommonUtils.getStatusbarHeight(getContext());
+//                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) layout.getLayoutParams();
+//                params.topMargin = top;
+//                layout.setLayoutParams(params);
         }
+
+        setHasOptionsMenu(true);
+        Toolbar toolbar = (Toolbar) root.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+
         mRvGank = (RecyclerView) root.findViewById(R.id.rv_gank);
         mRvGank.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvAdapter = new NewsListAdapter(getContext());
