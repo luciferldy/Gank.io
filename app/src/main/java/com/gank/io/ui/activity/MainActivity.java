@@ -1,6 +1,7 @@
 package com.gank.io.ui.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,7 @@ import com.gank.io.ui.fragment.ImgPreviewFragment;
 import com.gank.io.ui.fragment.NewsFragment;
 import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.ui.view.IMainView;
+import com.gank.io.util.CommonUtils;
 import com.gank.io.util.DateUtils;
 import com.gank.io.util.Logger;
 
@@ -47,8 +49,17 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         super.onCreate(savedInstanceState);
         Logger.i(LOG_TAG, "onCreate");
         setContentView(R.layout.activity_main);
+
+        // 删掉这句话不会使导航栏挤到状态栏上。
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+//        AppBarLayout toolbarLayout = (AppBarLayout) findViewById(R.id.toolbar_layout);
+//        int paddingLeft = toolbarLayout.getPaddingLeft();
+//        int paddingTop = CommonUtils.getStatusbarHeight(getBaseContext());
+//        int paddingRight = toolbarLayout.getPaddingRight();
+//        int paddingBottom = toolbarLayout.getPaddingBottom();
+//        toolbarLayout.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
 
         initRefreshLayout((SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout));
 

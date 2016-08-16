@@ -19,9 +19,4 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_dialog_email" />
 
-    <FrameLayout
-        android:id="@+id/fragment_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
 </android.support.design.widget.CoordinatorLayout>

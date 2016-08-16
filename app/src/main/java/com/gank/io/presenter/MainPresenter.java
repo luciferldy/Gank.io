@@ -112,7 +112,6 @@ public class MainPresenter extends BasePresenter {
                 else {
                     ((IMainView) mView).appendMoreData(items);
                 }
-
             }
 
             @Override

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -46,8 +47,10 @@ public class WebFragment extends ISwipeRefreshFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.web_content, container, false);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Logger.i(LOG_TAG, "沉浸式");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AppBarLayout appBarLayout = (AppBarLayout) root.findViewById(R.id.toolbar_layout);
+            appBarLayout.setPadding(appBarLayout.getLeft(), CommonUtils.getStatusbarHeight(getContext()),
+                    appBarLayout.getRight(), appBarLayout.getBottom());
         }
 
         setHasOptionsMenu(true);
