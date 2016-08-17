@@ -12,7 +12,7 @@ import retrofit2.http.Path;
  */
 public interface GirlApiService {
 
-    @GET("{pageCount}/{pageNumber}")
-    Call<GirlJson> getGirl(@Path("pageCount") int pageCount, @Path("pageNumber") int pageNumber);
+    @GET("{requestCount}/{pageNumber}")
+    Call<GirlJson> getGirl(@Path("requestCount") int requestCount, @Path("pageNumber") int pageNumber);
 
 }

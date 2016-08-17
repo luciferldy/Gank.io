@@ -38,6 +38,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.gank.io.R;
 import com.gank.io.model.ContentItem;
+import com.gank.io.presenter.GirlPreviewPresenter;
 import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.util.CommonUtils;
 import com.gank.io.util.FragmentUtils;
@@ -58,6 +59,7 @@ public class GirlPreviewFragment extends Fragment implements IFragmentView{
 
     private SimpleDraweeView meizhiimg;
 
+    private GirlPreviewPresenter mPrensenter;
     private String mUrl;
 
     @Nullable
@@ -80,6 +82,7 @@ public class GirlPreviewFragment extends Fragment implements IFragmentView{
                 .setUri(Uri.parse(mUrl))
                 .build();
         meizhiimg.setController(controller);
+        initPresenter();
         return root;
     }
 
@@ -92,67 +95,17 @@ public class GirlPreviewFragment extends Fragment implements IFragmentView{
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == SAVE_PIC_ID) {
-            // click the item
-            Toast.makeText(getContext(), "尝试保存图片...", Toast.LENGTH_SHORT).show();
-            CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(ImageRequest.fromUri(Uri.parse(mUrl)));
-            File localFile = CommonUtils.getCachedImageOnDisk(cacheKey);
-            if (localFile == null) {
-                ImageRequest imageRequest = ImageRequestBuilder
-                        .newBuilderWithSource(Uri.parse(mUrl))
-                        .setProgressiveRenderingEnabled(true)
-                        .build();
-                final ImagePipeline imagePipeline = Fresco.getImagePipeline();
-                DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchImageFromBitmapCache(imageRequest, getContext());
-                dataSource.subscribe(new BaseBitmapDataSubscriber() {
-                    @Override
-                    protected void onNewResultImpl(Bitmap bitmap) {
-                        if (bitmap == null) {
-                            Logger.i(LOG_TAG, "bitmap lost.");
-                            return;
-                        }
-                        String dirName = Environment.getExternalStorageDirectory() + "/Gank.io/";
-                        File dirFile = new File(dirName);
-                        if (!dirFile.exists()) {
-                            dirFile.mkdir();
-                        }
-                        File imgFile = new File(dirFile, getImgName(mUrl));
-                        if (imgFile.exists()) {
-                            Toast.makeText(getContext(), "图片已经保存过了..", Toast.LENGTH_SHORT).show();
-                            return;
-                        } else {
-                            try {
-                                FileOutputStream fos = new FileOutputStream(imgFile);
-                                assert bitmap != null;
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                                fos.flush();
-                                fos.close();
-                                Toast.makeText(getContext(), "图片保存成功", Toast.LENGTH_SHORT).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Toast.makeText(getContext(), "图片保存失败", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-
-                    }
-                }, CallerThreadExecutor.getInstance());
-            } else {
-                String dirName = Environment.getExternalStorageDirectory() + "/Gank.io/";
-                File dirFile = new File(dirName);
-                if (!dirFile.exists()) {
-                    dirFile.mkdir();
+            mPrensenter.saveImg(mUrl, new GirlPreviewPresenter.SaveImgCallback() {
+                @Override
+                public void onSuccess(String path) {
+                    Toast.makeText(getContext(), R.string.save_image_success, Toast.LENGTH_SHORT).show();
                 }
-                File imgFile = new File(dirFile, getImgName(mUrl));
-                if (imgFile.exists()) {
-                    Toast.makeText(getContext(), "图片已经存在", Toast.LENGTH_SHORT).show();
-                } else {
-                    CommonUtils.copyFile(localFile, imgFile);
-                    Toast.makeText(getContext(), "保存图片成功", Toast.LENGTH_SHORT).show();
+
+                @Override
+                public void onFailed(String errorMsg) {
+                    Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
                 }
-            }
+            });
             return true;
         } else {
             return super.onContextItemSelected(item);
@@ -162,6 +115,7 @@ public class GirlPreviewFragment extends Fragment implements IFragmentView{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mPrensenter.unSubscribe();
     }
 
     @Override
@@ -172,7 +126,7 @@ public class GirlPreviewFragment extends Fragment implements IFragmentView{
 
     @Override
     public void initPresenter() {
-
+        mPrensenter = new GirlPreviewPresenter(getActivity(), this);
     }
 
     @Override
@@ -180,11 +134,9 @@ public class GirlPreviewFragment extends Fragment implements IFragmentView{
 
     }
 
-    private String getImgName(String url) {
-        String[] parts =  url.split("/");
-        return parts[parts.length - 1];
-    }
-
+    /**
+     *  监听 drawee 图片加载
+     */
     private ControllerListener mControllerListener = new BaseControllerListener<ImageInfo>() {
 
         @Override

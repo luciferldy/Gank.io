@@ -57,13 +57,8 @@ public class NewsFragment extends ISwipeRefreshFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.news_content, container, false);
-        // 在 4.4 之上的 Fragment 需要对此进行适配
+        // 在 5.0 之上的 Fragment 需要对此进行适配
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                AppBarLayout layout = (AppBarLayout) root.findViewById(R.id.toolbar_layout);
-//                int top = root.getPaddingTop() == 0 ? CommonUtils.getStatusbarHeight(getContext()) : root.getPaddingTop() + CommonUtils.getStatusbarHeight(getContext());
-//                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) layout.getLayoutParams();
-//                params.topMargin = top;
-//                layout.setLayoutParams(params);
             AppBarLayout appBarLayout = (AppBarLayout) root.findViewById(R.id.toolbar_layout);
             appBarLayout.setPadding(appBarLayout.getLeft(), CommonUtils.getStatusbarHeight(getContext()),
                     appBarLayout.getRight(), appBarLayout.getBottom());

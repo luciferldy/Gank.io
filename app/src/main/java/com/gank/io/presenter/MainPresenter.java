@@ -2,10 +2,12 @@ package com.gank.io.presenter;
 
 import android.app.Activity;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.gank.io.api.GirlApiService;
 import com.gank.io.model.ContentItem;
 import com.gank.io.model.GirlJson;
+import com.gank.io.ui.activity.ISwipeRefreshActivity;
 import com.gank.io.ui.view.IBaseView;
 import com.gank.io.ui.view.IMainView;
 import com.gank.io.util.GetRss;
@@ -36,8 +38,11 @@ public class MainPresenter extends BasePresenter {
     }
 
     /**
-     * load meizhi pic
+     * load meizhi information by UrlConnection
+     * @boolean loadMore 是否加载更多
+     * @LoadCallback callback 请求妹纸信息的回调接口，用来更新 swiperefreshlayout
      */
+    @Deprecated
     public synchronized void loadMeizhi(final boolean loadMore, final LoadCallback callback) {
         // 网络访问请求妹纸图片
         new Thread(new Runnable() {
@@ -82,9 +87,10 @@ public class MainPresenter extends BasePresenter {
 
     /**
      * 使用 Retrofit 加载资源
-     * @param loadMore
+     * @param loadMore 是否加载更多
      */
     public synchronized void getMeizhiRetrofit(final boolean loadMore) {
+        isLoadingData = true;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(GetRss.API_MEIZHI_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -100,6 +106,12 @@ public class MainPresenter extends BasePresenter {
             @Override
             public void onResponse(Call<GirlJson> call, Response<GirlJson> response) {
                 List<GirlJson.ResultsBean> girls  = response.body().getResults();
+                if (girls == null || girls.isEmpty()) {
+                    Logger.i(LOG_TAG, "onResponse result is empty.");
+                    isLoadingData = false;
+                    ((ISwipeRefreshActivity) mView).hideRefresh();
+                    return;
+                }
                 ArrayList<ContentItem> items = new ArrayList<>();
                 for (GirlJson.ResultsBean bean : girls) {
                     Logger.i(LOG_TAG, bean.toString());
@@ -112,15 +124,17 @@ public class MainPresenter extends BasePresenter {
                 else {
                     ((IMainView) mView).appendMoreData(items);
                 }
+                isLoadingData = false;
+                ((ISwipeRefreshActivity) mView).hideRefresh();
             }
 
             @Override
             public void onFailure(Call<GirlJson> call, Throwable t) {
-
+                Logger.i(LOG_TAG, "onFailure");
+                isLoadingData = false;
+                ((ISwipeRefreshActivity) mView).hideRefresh();
             }
         });
-
-
 
     }
 
@@ -129,8 +143,10 @@ public class MainPresenter extends BasePresenter {
     }
 
     /**
-     * 请求妹纸信息的回调，用来控制 swiperefreshlayout
+     * 请求妹纸信息的回调
+     * 更新 swiperefreshlayout
      */
+    @Deprecated
     public interface LoadCallback {
 
         void onLoadSuccess();

@@ -88,7 +88,8 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
                     if (!mSwipeRefreshLayout.isRefreshing() && isBottom) {
                         Logger.i(LOG_TAG, "slide to the bottom and no refreshing, ready to load more data.");
                         showRefresh();
-                        mPresenter.loadMeizhi(true, mLoadCallback);
+                        mPresenter.getMeizhiRetrofit(true);
+//                        mPresenter.loadMeizhi(true, mLoadCallback);
                     }
                 }
             }
@@ -236,6 +237,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
     protected void onRefreshStart() {
         super.onRefreshStart();
         Logger.i(LOG_TAG, "onRefresh");
-        mPresenter.loadMeizhi(false, mLoadCallback);
+        mPresenter.getMeizhiRetrofit(false);
+//        mPresenter.loadMeizhi(false, mLoadCallback);
     }
 }

@@ -13,7 +13,7 @@ import retrofit2.http.Path;
  */
 public interface GankApiService {
 
-    @GET("{pageCount}/{pageNumber}")
-    Call<List<ContentItem>> getGank(@Path("pageCount") String pageCount, @Path("pageNumber") String pageNumber);
+    @GET("{requestCount}/{pageNumber}")
+    Call<List<ContentItem>> getGank(@Path("requestCount") String requestCount, @Path("pageNumber") String pageNumber);
 
 }

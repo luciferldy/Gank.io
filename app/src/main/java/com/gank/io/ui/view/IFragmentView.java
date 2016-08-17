@@ -1,6 +1,5 @@
 package com.gank.io.ui.view;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**

@@ -2,7 +2,6 @@ package com.gank.io.presenter;
 
 import android.app.Activity;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.gank.io.model.ContentItem;
 import com.gank.io.ui.view.IBaseView;
@@ -12,7 +11,6 @@ import com.gank.io.util.Logger;
 import com.gank.io.util.ParseRss;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Lucifer on 2016/7/16.
@@ -53,6 +51,14 @@ public class NewsPresenter extends BasePresenter {
                 isLoading = false;
             }
         }).start();
+
+    }
+
+    /**
+     * 使用 retrofit 加载内容的详细信息
+     * @param date 日期
+     */
+    public void getNewsRetrofit(final String date) {
 
     }
 

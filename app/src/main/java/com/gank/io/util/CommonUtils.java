@@ -101,9 +101,9 @@ public class CommonUtils {
      * @param src
      * @param dst
      */
-    public static void copyFile(File src, File dst) {
+    public static boolean copyFile(File src, File dst) {
         if (src == null || !src.exists() || dst == null)
-            return;
+            return false;
         try {
             InputStream is = new FileInputStream(src); //读入原文件
             FileOutputStream fos = new FileOutputStream(dst);
@@ -115,8 +115,10 @@ public class CommonUtils {
             is.close();
             fos.flush();
             fos.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
