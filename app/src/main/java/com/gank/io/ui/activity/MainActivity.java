@@ -1,14 +1,12 @@
 package com.gank.io.ui.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -22,11 +20,10 @@ import com.gank.io.R;
 import com.gank.io.model.ContentItem;
 import com.gank.io.ui.adapter.MainListAdapter;
 import com.gank.io.presenter.MainPresenter;
-import com.gank.io.ui.fragment.ImgPreviewFragment;
+import com.gank.io.ui.fragment.GirlPreviewFragment;
 import com.gank.io.ui.fragment.NewsFragment;
 import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.ui.view.IMainView;
-import com.gank.io.util.CommonUtils;
 import com.gank.io.util.DateUtils;
 import com.gank.io.util.Logger;
 
@@ -131,13 +128,13 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
             @Override
             public void onClickGankItemGirl(ContentItem item) {
                 FragmentManager manager = getSupportFragmentManager();
-                ImgPreviewFragment preview = new ImgPreviewFragment();
+                GirlPreviewFragment preview = new GirlPreviewFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(ContentItem.URL, item.getUrl());
                 preview.setArguments(bundle);
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.add(android.R.id.content, preview);
-                transaction.addToBackStack(ImgPreviewFragment.class.getSimpleName() + System.currentTimeMillis());
+                transaction.addToBackStack(GirlPreviewFragment.class.getSimpleName() + System.currentTimeMillis());
                 transaction.commit();
             }
         };
