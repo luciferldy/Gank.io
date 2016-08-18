@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Gank.io</string>
+    <string name="app_name">Gank</string>
     <string name="action_settings">设置</string>
     <string name="action_copy">复制链接</string>
     <string name="open_in_browser">在浏览器中打开</string>

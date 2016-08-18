@@ -2,11 +2,10 @@ package com.gank.io.presenter;
 
 import android.app.Activity;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.gank.io.api.GirlApiService;
+import com.gank.io.api.MeizhiApiService;
 import com.gank.io.model.ContentItem;
-import com.gank.io.model.GirlJson;
+import com.gank.io.model.MeizhiGson;
 import com.gank.io.ui.activity.ISwipeRefreshActivity;
 import com.gank.io.ui.view.IBaseView;
 import com.gank.io.ui.view.IMainView;
@@ -100,20 +99,20 @@ public class MainPresenter extends BasePresenter {
         } else {
             mPageNumber = 1;
         }
-        GirlApiService service = retrofit.create(GirlApiService.class);
-        Call<GirlJson> call = service.getGirl(REQUEST_COUNT, mPageNumber);
-        call.enqueue(new Callback<GirlJson>() {
+        MeizhiApiService service = retrofit.create(MeizhiApiService.class);
+        Call<MeizhiGson> call = service.getMeizhi(REQUEST_COUNT, mPageNumber);
+        call.enqueue(new Callback<MeizhiGson>() {
             @Override
-            public void onResponse(Call<GirlJson> call, Response<GirlJson> response) {
-                List<GirlJson.ResultsBean> girls  = response.body().getResults();
+            public void onResponse(Call<MeizhiGson> call, Response<MeizhiGson> response) {
+                List<MeizhiGson.ResultsBean> girls  = response.body().getResults();
                 if (girls == null || girls.isEmpty()) {
                     Logger.i(LOG_TAG, "onResponse result is empty.");
                     isLoadingData = false;
-                    ((ISwipeRefreshActivity) mView).hideRefresh();
+                    ((ISwipeRefreshActivity) mView).onComplete();
                     return;
                 }
                 ArrayList<ContentItem> items = new ArrayList<>();
-                for (GirlJson.ResultsBean bean : girls) {
+                for (MeizhiGson.ResultsBean bean : girls) {
                     Logger.i(LOG_TAG, bean.toString());
                     ContentItem item = new ContentItem();
                     item.setJsonBean(bean);
@@ -125,14 +124,14 @@ public class MainPresenter extends BasePresenter {
                     ((IMainView) mView).appendMoreData(items);
                 }
                 isLoadingData = false;
-                ((ISwipeRefreshActivity) mView).hideRefresh();
+                ((ISwipeRefreshActivity) mView).onComplete();
             }
 
             @Override
-            public void onFailure(Call<GirlJson> call, Throwable t) {
+            public void onFailure(Call<MeizhiGson> call, Throwable t) {
                 Logger.i(LOG_TAG, "onFailure");
                 isLoadingData = false;
-                ((ISwipeRefreshActivity) mView).hideRefresh();
+                ((ISwipeRefreshActivity) mView).onComplete();
             }
         });
 

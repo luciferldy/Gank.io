@@ -1,6 +1,8 @@
 package com.gank.io.ui.activity;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -20,10 +22,11 @@ import com.gank.io.R;
 import com.gank.io.model.ContentItem;
 import com.gank.io.ui.adapter.MainListAdapter;
 import com.gank.io.presenter.MainPresenter;
-import com.gank.io.ui.fragment.GirlPreviewFragment;
+import com.gank.io.ui.fragment.MeizhiPreviewFragment;
 import com.gank.io.ui.fragment.NewsFragment;
 import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.ui.view.IMainView;
+import com.gank.io.util.CommonUtils;
 import com.gank.io.util.DateUtils;
 import com.gank.io.util.Logger;
 
@@ -47,16 +50,18 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         Logger.i(LOG_TAG, "onCreate");
         setContentView(R.layout.activity_main);
 
-        // 删掉这句话不会使导航栏挤到状态栏上。
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            View view = findViewById(R.id.status_bar_holder);
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) view.getLayoutParams();
+            params.height = CommonUtils.getStatusbarHeight(getBaseContext());
+            view.setLayoutParams(params);
+            view.setVisibility(View.VISIBLE);
+        }
 
-//        AppBarLayout toolbarLayout = (AppBarLayout) findViewById(R.id.toolbar_layout);
-//        int paddingLeft = toolbarLayout.getPaddingLeft();
-//        int paddingTop = CommonUtils.getStatusbarHeight(getBaseContext());
-//        int paddingRight = toolbarLayout.getPaddingRight();
-//        int paddingBottom = toolbarLayout.getPaddingBottom();
-//        toolbarLayout.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        toolbar.inflateMenu(R.menu.menu_main);
+
+        setSupportActionBar(toolbar);
 
         initRefreshLayout((SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout));
 
@@ -81,13 +86,12 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     // 测试时使用的 log, lastVisibleItemPositions 返回的最后一个可见的 item 的位置, lastCompletelyVisibleItemPositions 返回的是最后一个完全可见的 item 的位置.
 //                    int[] visiblePos = layoutManager.findLastVisibleItemPositions(new int[2]);
-//                    Logger.i(LOG_TAG, "last visible position is " + visiblePos[0] + ", " + visiblePos[1]);
-//                    int[] compVisiPos = layoutManager.findLastCompletelyVisibleItemPositions(new int[2]);
-//                    Logger.i(LOG_TAG, "last completely visible position is " + compVisiPos[0] + ", " + compVisiPos[1]);
-                    boolean isBottom = layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1] >= mAdapter.getItemCount() - 4;
+//                    Logger.i(LOG_TAG, "last visible position is "  + visiblePos[0] + ", " + visiblePos[1]);
+//                    int[] compVisPoss = layoutManager.findLastCompletelyVisibleItemPositions(new int[2]);
+//                    Logger.i(LOG_TAG, "last completely visible position is " + compVisPoss[0] + ", " + compVisPoss[1]);
+                    boolean isBottom = layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1] >= mAdapter.getItemCount() - 3;
                     if (!mSwipeRefreshLayout.isRefreshing() && isBottom) {
                         Logger.i(LOG_TAG, "slide to the bottom and no refreshing, ready to load more data.");
-                        showRefresh();
                         mPresenter.getMeizhiRetrofit(true);
 //                        mPresenter.loadMeizhi(true, mLoadCallback);
                     }
@@ -129,13 +133,13 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
             @Override
             public void onClickGankItemGirl(ContentItem item) {
                 FragmentManager manager = getSupportFragmentManager();
-                GirlPreviewFragment preview = new GirlPreviewFragment();
+                MeizhiPreviewFragment preview = new MeizhiPreviewFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(ContentItem.URL, item.getUrl());
                 preview.setArguments(bundle);
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.add(android.R.id.content, preview);
-                transaction.addToBackStack(GirlPreviewFragment.class.getSimpleName() + System.currentTimeMillis());
+                transaction.addToBackStack(MeizhiPreviewFragment.class.getSimpleName() + System.currentTimeMillis());
                 transaction.commit();
             }
         };
@@ -163,28 +167,9 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
             }
         };
 //        mPresenter.loadMeizhi(false, mLoadCallback);
+
+        showRefresh();
         mPresenter.getMeizhiRetrofit(false);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -230,7 +215,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
 
     @Override
     protected boolean prepareRefresh() {
-        return mPresenter.isLoadingData();
+        return !mPresenter.isLoadingData();
     }
 
     @Override

@@ -57,16 +57,18 @@ public class NewsFragment extends ISwipeRefreshFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.news_content, container, false);
-        // 在 5.0 之上的 Fragment 需要对此进行适配
+
+        // compact device after Android 5.0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AppBarLayout appBarLayout = (AppBarLayout) root.findViewById(R.id.toolbar_layout);
-            appBarLayout.setPadding(appBarLayout.getLeft(), CommonUtils.getStatusbarHeight(getContext()),
-                    appBarLayout.getRight(), appBarLayout.getBottom());
+            View view = root.findViewById(R.id.status_bar_holder);
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) view.getLayoutParams();
+            params.height = CommonUtils.getStatusbarHeight(getContext());
+            view.setLayoutParams(params);
+            view.setVisibility(View.VISIBLE);
         }
 
-        setHasOptionsMenu(true);
         Toolbar toolbar = (Toolbar) root.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        toolbar.setTitle("干货");
 
         mRvGank = (RecyclerView) root.findViewById(R.id.rv_gank);
         mRvGank.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -94,18 +96,6 @@ public class NewsFragment extends ISwipeRefreshFragment{
         mRvAdapter.setIClickItem(clickNewsItem);
         mRvGank.setAdapter(mRvAdapter);
         initRefreshLayout((SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh_layout));
-        Bundle bundle = getArguments();
-        String year, month, day;
-        if (bundle != null) {
-            year = bundle.getString(DateUtils.YEAR);
-            month = bundle.getString(DateUtils.MONTH);
-            day = bundle.getString(DateUtils.DAY);
-            mPublishDate = year + "/" + month + "/" + day;
-            if (presenter instanceof NewsPresenter) {
-                showRefresh();
-                ((NewsPresenter) presenter).loadNews(mPublishDate);
-            }
-        }
 
         root.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -117,14 +107,26 @@ public class NewsFragment extends ISwipeRefreshFragment{
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle bundle = getArguments();
+        String year, month, day;
+        if (bundle != null) {
+            year = bundle.getString(DateUtils.YEAR);
+            month = bundle.getString(DateUtils.MONTH);
+            day = bundle.getString(DateUtils.DAY);
+            mPublishDate = year + "/" + month + "/" + day;
+            if (presenter instanceof NewsPresenter) {
+                showRefresh();
+                ((NewsPresenter) presenter).getNewsRetrofit(mPublishDate);
+            }
+        }
     }
 
     @Override
     protected void onRefreshStart() {
         super.onRefreshStart();
-        ((NewsPresenter) presenter).loadNews(mPublishDate);
+        ((NewsPresenter) presenter).getNewsRetrofit(mPublishDate);
     }
 
     @Override
@@ -148,13 +150,12 @@ public class NewsFragment extends ISwipeRefreshFragment{
             @Override
             public void run() {
                 mRvAdapter.updateData((ArrayList<ContentItem>) data);
-                hideRefresh();
             }
         });
     }
 
     @Override
     protected boolean prepareRefresh() {
-        return ((NewsPresenter)presenter).isLoading();
+        return !((NewsPresenter)presenter).isLoading();
     }
 }

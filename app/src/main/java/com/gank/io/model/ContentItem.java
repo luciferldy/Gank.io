@@ -113,7 +113,7 @@ public class ContentItem {
         return isCategory;
     }
 
-    public void setJsonBean(GirlJson.ResultsBean bean) {
+    public void setJsonBean(MeizhiGson.ResultsBean bean) {
         this.objectId = bean.get_id();
         this.createdAt = DateUtils.toDate(bean.getCreatedAt().trim());
         this.desc = bean.getDesc();

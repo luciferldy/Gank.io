@@ -47,19 +47,30 @@ public class ISwipeRefreshFragment extends Fragment implements IRefreshView, IFr
 
     }
 
+    /**
+     * 从 SwipeRefreshLayout 的源码得知，只有执行 onLayout 函数之后 setRefreshing()
+     * 才会被执行，在这里使用 post 方法可以将 setRefreshing(true) 函数放在 ui 线程排队执行即可
+     */
     @Override
     public void showRefresh() {
-        mISwipeRefreshLayout.setRefreshing(true);
+        mISwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mISwipeRefreshLayout != null)
+                    mISwipeRefreshLayout.setRefreshing(true);
+            }
+        });
     }
 
     @Override
     public void hideRefresh() {
-        mISwipeRefreshLayout.postDelayed(new Runnable() {
+        mISwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                mISwipeRefreshLayout.setRefreshing(false);
+                if (mISwipeRefreshLayout != null)
+                    mISwipeRefreshLayout.setRefreshing(false);
             }
-        }, 700);
+        });
     }
 
     @Override
@@ -75,5 +86,10 @@ public class ISwipeRefreshFragment extends Fragment implements IRefreshView, IFr
     @Override
     public void fillData(List data) {
 
+    }
+
+    @Override
+    public void onComplete() {
+        hideRefresh();
     }
 }

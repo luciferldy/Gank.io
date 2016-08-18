@@ -11,12 +11,12 @@ import com.gank.io.ui.view.IBaseView;
 /**
  * Created by Lucifer on 2016/8/6.
  */
-public class WebContentPresenter extends BasePresenter<IBaseView> {
+public class WebPresenter extends BasePresenter<IBaseView> {
 
     private boolean isLoading = false;
     private WebView mWebView;
 
-    public WebContentPresenter(Activity activity, IBaseView view) {
+    public WebPresenter(Activity activity, IBaseView view) {
         super(activity, view);
     }
 

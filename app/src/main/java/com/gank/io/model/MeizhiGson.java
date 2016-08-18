@@ -4,8 +4,9 @@ import java.util.List;
 
 /**
  * Created by Lucifer on 2016/8/7.
+ * Meizhi 信息的格式比较固定，使用 GsonFactory
  */
-public class GirlJson {
+public class MeizhiGson {
 
     /**
      * _id : 57a4056c421aa91e2606478d

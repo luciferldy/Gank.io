@@ -17,6 +17,11 @@ public class ParseRss {
     private static final String RESULTS = "results";
     private static final String CATEGORY = "category";
 
+    /**
+     * 解析每天的 Gank 内容的 Json 数据
+     * @param result
+     * @return
+     */
     public static ArrayList<ContentItem> parseDailyContent(String result) {
         try {
             JSONObject allDate = new JSONObject(result);
@@ -64,6 +69,11 @@ public class ParseRss {
         return null;
     }
 
+    /**
+     * 解析妹纸信息的 Json 数据
+     * @param result
+     * @return
+     */
     public static ArrayList<ContentItem> parseMeizhi(String result) {
         try {
             JSONObject totalData = new JSONObject(result);

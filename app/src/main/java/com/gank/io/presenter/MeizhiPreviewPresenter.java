@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.facebook.cache.common.CacheKey;
 import com.facebook.common.executors.CallerThreadExecutor;
@@ -37,14 +36,14 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Lucifer on 2016/8/17.
  */
-public class GirlPreviewPresenter extends BasePresenter<IFragmentView> {
+public class MeizhiPreviewPresenter extends BasePresenter<IFragmentView> {
 
-    private static final String LOG_TAG = GirlPreviewPresenter.class.getSimpleName();
+    private static final String LOG_TAG = MeizhiPreviewPresenter.class.getSimpleName();
     private static final String ERROR_FILE_EXISTED = "file existed";
 
     protected Subscription subscription;
 
-    public GirlPreviewPresenter(Activity activity, IFragmentView view) {
+    public MeizhiPreviewPresenter(Activity activity, IFragmentView view) {
         super(activity, view);
     }
 

@@ -1,10 +1,8 @@
 package com.gank.io.ui.fragment;
 
-import android.graphics.Bitmap;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
@@ -15,51 +13,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.facebook.binaryresource.BinaryResource;
-import com.facebook.binaryresource.FileBinaryResource;
-import com.facebook.cache.common.CacheKey;
-import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.logging.FLog;
-import com.facebook.common.references.CloseableReference;
-import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.facebook.imagepipeline.core.ImagePipelineFactory;
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
-import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.image.QualityInfo;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.gank.io.R;
 import com.gank.io.model.ContentItem;
-import com.gank.io.presenter.GirlPreviewPresenter;
+import com.gank.io.presenter.MeizhiPreviewPresenter;
 import com.gank.io.ui.view.IFragmentView;
-import com.gank.io.util.CommonUtils;
 import com.gank.io.util.FragmentUtils;
 import com.gank.io.util.Logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by lucifer on 16-1-4.
  */
-public class GirlPreviewFragment extends Fragment implements IFragmentView{
+public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
 
     private static final int SAVE_PIC_ID = 1;
-    private static final String LOG_TAG = GirlPreviewFragment.class.getSimpleName();
+    private static final String LOG_TAG = MeizhiPreviewFragment.class.getSimpleName();
 
     private SimpleDraweeView meizhiimg;
 
-    private GirlPreviewPresenter mPrensenter;
+    private MeizhiPreviewPresenter mPrensenter;
     private String mUrl;
 
     @Nullable
@@ -95,7 +76,7 @@ public class GirlPreviewFragment extends Fragment implements IFragmentView{
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == SAVE_PIC_ID) {
-            mPrensenter.saveImg(mUrl, new GirlPreviewPresenter.SaveImgCallback() {
+            mPrensenter.saveImg(mUrl, new MeizhiPreviewPresenter.SaveImgCallback() {
                 @Override
                 public void onSuccess(String path) {
                     Toast.makeText(getContext(), R.string.save_image_success, Toast.LENGTH_SHORT).show();
@@ -126,7 +107,7 @@ public class GirlPreviewFragment extends Fragment implements IFragmentView{
 
     @Override
     public void initPresenter() {
-        mPrensenter = new GirlPreviewPresenter(getActivity(), this);
+        mPrensenter = new MeizhiPreviewPresenter(getActivity(), this);
     }
 
     @Override

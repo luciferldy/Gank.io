@@ -9,11 +9,9 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.gank.io.R;
 import com.gank.io.model.ContentItem;
-import com.gank.io.util.DateUtils;
 import com.gank.io.util.Logger;
 import com.gank.io.util.StringStyleUtils;
 
@@ -21,10 +19,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by Lucifer on 2016/7/18.
@@ -66,7 +62,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     public ViewHolderItem onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
         if (viewType == EItemType.ITEM_TYPE_GIRL.ordinal()) {
-            view = LayoutInflater.from(mContext).inflate(R.layout.gank_item_girl, parent, false);
+            view = LayoutInflater.from(mContext).inflate(R.layout.gank_item_meizhi, parent, false);
             return new ViewHolderItemGirl(view);
         } else if (viewType == EItemType.ITEM_TYPE_CATEGORY.ordinal()) {
             view = LayoutInflater.from(mContext).inflate(R.layout.gank_item_category, parent, false);

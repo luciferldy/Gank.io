@@ -8,4 +8,6 @@ public interface IRefreshView extends IBaseView{
     void showRefresh();
 
     void hideRefresh();
+
+    void onComplete();
 }
