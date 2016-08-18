@@ -15,8 +15,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.gank.io.R;
 import com.gank.io.model.ContentItem;
@@ -92,6 +90,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
                     boolean isBottom = layoutManager.findLastCompletelyVisibleItemPositions(new int[2])[1] >= mAdapter.getItemCount() - 3;
                     if (!mSwipeRefreshLayout.isRefreshing() && isBottom) {
                         Logger.i(LOG_TAG, "slide to the bottom and no refreshing, ready to load more data.");
+                        showRefresh();
                         mPresenter.getMeizhiRetrofit(true);
 //                        mPresenter.loadMeizhi(true, mLoadCallback);
                     }

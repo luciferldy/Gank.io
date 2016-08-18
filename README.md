@@ -1,8 +1,8 @@
-Gank.io Android 客户端。
+Gank Android 客户端。
 
 首页使用 Activity ，Gank 内容和妹纸大图的展示使用 Fragment 。对于 Android 4.4 和 5.0 以上的进行半透明，透明状态栏的适配。
 
-网络访问使用 [Retrofit]() 框架。
+网络访问使用 [Retrofit](https://github.com/square/retrofit) 框架。
 
 妹纸图片的加载使用 [Fresco](http://fresco-cn.org/) 框架。
 

@@ -79,12 +79,15 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
             mPrensenter.saveImg(mUrl, new MeizhiPreviewPresenter.SaveImgCallback() {
                 @Override
                 public void onSuccess(String path) {
+                    Logger.i(LOG_TAG, "save image success path = " + path);
                     Toast.makeText(getContext(), R.string.save_image_success, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailed(String errorMsg) {
-                    Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                    Logger.i(LOG_TAG, "save image failed error msg = " + errorMsg);
+                    if (errorMsg.equals(MeizhiPreviewPresenter.ERROR_FILE_EXISTED))
+                        Toast.makeText(getContext(), R.string.save_image_existed, Toast.LENGTH_SHORT).show();
                 }
             });
             return true;

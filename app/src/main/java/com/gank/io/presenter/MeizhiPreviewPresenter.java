@@ -39,7 +39,7 @@ import rx.schedulers.Schedulers;
 public class MeizhiPreviewPresenter extends BasePresenter<IFragmentView> {
 
     private static final String LOG_TAG = MeizhiPreviewPresenter.class.getSimpleName();
-    private static final String ERROR_FILE_EXISTED = "file existed";
+    public static final String ERROR_FILE_EXISTED = "file existed";
 
     protected Subscription subscription;
 
@@ -148,7 +148,7 @@ public class MeizhiPreviewPresenter extends BasePresenter<IFragmentView> {
                     }
                 }
             }
-        }).observeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
 
     }
 
