@@ -40,7 +40,7 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
 
     private SimpleDraweeView meizhiimg;
 
-    private MeizhiPreviewPresenter mPrensenter;
+    private MeizhiPreviewPresenter mPresenter;
     private String mUrl;
 
     @Nullable
@@ -76,7 +76,7 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == SAVE_PIC_ID) {
-            mPrensenter.saveImg(mUrl, new MeizhiPreviewPresenter.SaveImgCallback() {
+            mPresenter.saveImg(mUrl, new MeizhiPreviewPresenter.SaveImgCallback() {
                 @Override
                 public void onSuccess(String path) {
                     Logger.i(LOG_TAG, "save image success path = " + path);
@@ -99,7 +99,7 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mPrensenter.unSubscribe();
+        mPresenter.unSubscribe();
     }
 
     @Override
@@ -110,7 +110,7 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
 
     @Override
     public void initPresenter() {
-        mPrensenter = new MeizhiPreviewPresenter(getActivity(), this);
+        mPresenter = new MeizhiPreviewPresenter(getActivity(), this);
     }
 
     @Override

@@ -42,7 +42,7 @@ public class WebFragment extends ISwipeRefreshFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.web_content, container, false);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             View view = root.findViewById(R.id.status_bar_holder);
             AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) view.getLayoutParams();
             params.height = CommonUtils.getStatusbarHeight(getContext());

@@ -59,7 +59,7 @@ public class NewsFragment extends ISwipeRefreshFragment{
         View root = inflater.inflate(R.layout.news_content, container, false);
 
         // compact device after Android 5.0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             View view = root.findViewById(R.id.status_bar_holder);
             AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) view.getLayoutParams();
             params.height = CommonUtils.getStatusbarHeight(getContext());

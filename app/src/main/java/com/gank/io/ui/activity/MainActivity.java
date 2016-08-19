@@ -48,7 +48,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         Logger.i(LOG_TAG, "onCreate");
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             View view = findViewById(R.id.status_bar_holder);
             AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) view.getLayoutParams();
             params.height = CommonUtils.getStatusbarHeight(getBaseContext());
