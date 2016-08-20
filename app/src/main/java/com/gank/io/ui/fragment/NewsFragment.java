@@ -84,7 +84,7 @@ public class NewsFragment extends ISwipeRefreshFragment{
                 Bundle bundle = new Bundle();
                 bundle.putString(ContentItem.URL, item.getUrl());
                 Log.d(LOG_TAG, ContentItem.URL + "=" + item.getUrl());
-                FragmentUtils.addFragment(new WebFragment(), getActivity().getSupportFragmentManager()
+                FragmentUtils.addFragment(new MeizhiPreviewFragment(), getActivity().getSupportFragmentManager()
                         , bundle, FragmentUtils.FragmentAnim.FADE, true);
             }
 
