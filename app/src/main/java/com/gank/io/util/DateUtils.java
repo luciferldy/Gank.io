@@ -16,6 +16,7 @@ public class DateUtils {
     public static final String YEAR = "year";
     public static final String MONTH ="month";
     public static final String DAY = "day";
+    public static final String DATE = "date";
 
     /**
      * Date to String

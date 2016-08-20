@@ -139,7 +139,9 @@ public class MeizhiPreviewPresenter extends BasePresenter<IFragmentView> {
                     } else {
                         // copy file return boolean
                         if (CommonUtils.copyFile(localFile, imgFile)) {
-                            subscriber.onNext(getImgName(mUrl));
+                            Logger.i(LOG_TAG, "image file absolute path=" + imgFile.getAbsolutePath());
+                            Logger.i(LOG_TAG, "image file path=" + imgFile.getPath());
+                            subscriber.onNext(imgFile.getPath());
                             subscriber.onCompleted();
                         } else {
                             subscriber.onNext(null);

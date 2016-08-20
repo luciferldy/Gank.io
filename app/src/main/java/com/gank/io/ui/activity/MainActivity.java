@@ -1,7 +1,10 @@
 package com.gank.io.ui.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -26,8 +29,10 @@ import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.ui.view.IMainView;
 import com.gank.io.util.CommonUtils;
 import com.gank.io.util.DateUtils;
+import com.gank.io.util.FragmentUtils;
 import com.gank.io.util.Logger;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -57,9 +62,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.inflateMenu(R.menu.menu_main);
-
-        setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.app_name);
 
         initRefreshLayout((SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout));
 
@@ -67,8 +70,15 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Do u want know me ?", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, R.string.open_source_on_github, Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.open_en, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/luciferldy/Gank.io"));
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        }).show();
             }
         });
 
@@ -108,21 +118,12 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
             public void onClickGankItem(ContentItem item) {
                 try {
                     Date date = item.getPublishedAt();
-                    String year = (new SimpleDateFormat("yyyy", Locale.US)).format(date);
-                    String month = (new SimpleDateFormat("MM", Locale.US)).format(date);
-                    String day = (new SimpleDateFormat("dd", Locale.US)).format(date);
-                    Log.d(LOG_TAG, DateUtils.YEAR + "=" + year + " " + DateUtils.MONTH + "=" + month + " " + DateUtils.DAY + "=" + day);
-                    FragmentManager manager = getSupportFragmentManager();
-                    NewsFragment newsItem = new NewsFragment();
+                    DateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
+                    String dateStr = format.format(date);
+                    Log.d(LOG_TAG, "date=" + dateStr);
                     Bundle bundle = new Bundle();
-                    bundle.putString(DateUtils.YEAR, year);
-                    bundle.putString(DateUtils.MONTH, month);
-                    bundle.putString(DateUtils.DAY, day);
-                    newsItem.setArguments(bundle);
-                    FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.add(android.R.id.content, newsItem);
-                    transaction.addToBackStack(NewsFragment.class.getSimpleName() + System.currentTimeMillis());
-                    transaction.commit();
+                    bundle.putString(DateUtils.DATE, dateStr);
+                    FragmentUtils.addFragment(new NewsFragment(), getSupportFragmentManager(), bundle, FragmentUtils.FragmentAnim.SLIDE_RIGHT, true);
                 } catch (Exception e) {
                     Logger.i(LOG_TAG, "publish date is ");
                     e.printStackTrace();
@@ -131,15 +132,9 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
 
             @Override
             public void onClickGankItemGirl(ContentItem item) {
-                FragmentManager manager = getSupportFragmentManager();
-                MeizhiPreviewFragment preview = new MeizhiPreviewFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(ContentItem.URL, item.getUrl());
-                preview.setArguments(bundle);
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.add(android.R.id.content, preview);
-                transaction.addToBackStack(MeizhiPreviewFragment.class.getSimpleName() + System.currentTimeMillis());
-                transaction.commit();
+                FragmentUtils.addFragment(new MeizhiPreviewFragment(), getSupportFragmentManager(), bundle, FragmentUtils.FragmentAnim.FADE, true);
             }
         };
         mAdapter.setClickItem(mClickItem);
@@ -166,7 +161,15 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
             }
         };
 //        mPresenter.loadMeizhi(false, mLoadCallback);
+    }
 
+    /**
+     * when call onPostCreate, the activity is start-up
+     * @param savedInstanceState
+     */
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
         showRefresh();
         mPresenter.getMeizhiRetrofit(false);
     }

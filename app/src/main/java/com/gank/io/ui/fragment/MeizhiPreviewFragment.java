@@ -1,9 +1,11 @@
 package com.gank.io.ui.fragment;
 
+import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -39,6 +41,7 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
     private static final String LOG_TAG = MeizhiPreviewFragment.class.getSimpleName();
 
     private SimpleDraweeView meizhiimg;
+    private View mContainer;
 
     private MeizhiPreviewPresenter mPresenter;
     private String mUrl;
@@ -50,21 +53,21 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
         if (bundle != null) {
             mUrl = bundle.getString(ContentItem.URL);
         }
-        View root = inflater.inflate(R.layout.meizhi_preview, container, false);
-        root.setOnTouchListener(new View.OnTouchListener() {
+        mContainer = inflater.inflate(R.layout.meizhi_preview, container, false);
+        mContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return true;
             }
         });
-        meizhiimg = (SimpleDraweeView) root.findViewById(R.id.meizhi_preview_img);
+        meizhiimg = (SimpleDraweeView) mContainer.findViewById(R.id.meizhi_preview_img);
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setControllerListener(mControllerListener)
                 .setUri(Uri.parse(mUrl))
                 .build();
         meizhiimg.setController(controller);
         initPresenter();
-        return root;
+        return mContainer;
     }
 
     @Override
@@ -74,20 +77,30 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(final MenuItem item) {
         if (item.getItemId() == SAVE_PIC_ID) {
             mPresenter.saveImg(mUrl, new MeizhiPreviewPresenter.SaveImgCallback() {
                 @Override
-                public void onSuccess(String path) {
+                public void onSuccess(final String path) {
                     Logger.i(LOG_TAG, "save image success path = " + path);
-                    Toast.makeText(getContext(), R.string.save_image_success, Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mContainer, R.string.save_image_success, Snackbar.LENGTH_SHORT)
+                            .setAction(R.string.open_cn, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setDataAndType(Uri.parse(path), "image/*");
+                                    startActivity(intent);
+                                }
+                            }).show();
                 }
 
                 @Override
                 public void onFailed(String errorMsg) {
                     Logger.i(LOG_TAG, "save image failed error msg = " + errorMsg);
                     if (errorMsg.equals(MeizhiPreviewPresenter.ERROR_FILE_EXISTED))
-                        Toast.makeText(getContext(), R.string.save_image_existed, Toast.LENGTH_SHORT).show();
+                        Snackbar.make(mContainer, R.string.save_image_existed, Snackbar.LENGTH_SHORT)
+                                .show();
                 }
             });
             return true;

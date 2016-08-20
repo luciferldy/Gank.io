@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -68,7 +69,11 @@ public class NewsFragment extends ISwipeRefreshFragment{
         }
 
         Toolbar toolbar = (Toolbar) root.findViewById(R.id.toolbar);
-        toolbar.setTitle("干货");
+        Bundle bundle = getArguments();
+        if (bundle != null && !bundle.isEmpty()) {
+            mPublishDate = bundle.getString(DateUtils.DATE);
+            toolbar.setTitle(mPublishDate);
+        }
 
         mRvGank = (RecyclerView) root.findViewById(R.id.rv_gank);
         mRvGank.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -76,21 +81,20 @@ public class NewsFragment extends ISwipeRefreshFragment{
         NewsListAdapter.IClickNewsItem clickNewsItem = new NewsListAdapter.IClickNewsItem() {
             @Override
             public void onClickGankItemGirl(ContentItem item, View viewImg, View viewText) {
-
+                Bundle bundle = new Bundle();
+                bundle.putString(ContentItem.URL, item.getUrl());
+                Log.d(LOG_TAG, ContentItem.URL + "=" + item.getUrl());
+                FragmentUtils.addFragment(new WebFragment(), getActivity().getSupportFragmentManager()
+                        , bundle, FragmentUtils.FragmentAnim.FADE, true);
             }
 
             @Override
             public void onClickGankItemNormal(ContentItem item, View view) {
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                WebFragment fragment = new WebFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString(ContentItem.URL, item.getUrl());
                 Logger.i(LOG_TAG, ContentItem.URL + "=" + item.getUrl());
-                fragment.setArguments(bundle);
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.add(android.R.id.content, fragment);
-                transaction.addToBackStack(WebFragment.class.getSimpleName() + System.currentTimeMillis());
-                transaction.commit();
+                FragmentUtils.addFragment(new WebFragment(), getActivity().getSupportFragmentManager()
+                , bundle, FragmentUtils.FragmentAnim.SLIDE_RIGHT, true);
             }
         };
         mRvAdapter.setIClickItem(clickNewsItem);
@@ -109,17 +113,9 @@ public class NewsFragment extends ISwipeRefreshFragment{
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Bundle bundle = getArguments();
-        String year, month, day;
-        if (bundle != null) {
-            year = bundle.getString(DateUtils.YEAR);
-            month = bundle.getString(DateUtils.MONTH);
-            day = bundle.getString(DateUtils.DAY);
-            mPublishDate = year + "/" + month + "/" + day;
-            if (presenter instanceof NewsPresenter) {
-                showRefresh();
-                ((NewsPresenter) presenter).getNewsRetrofit(mPublishDate);
-            }
+        if (presenter instanceof NewsPresenter) {
+            showRefresh();
+            ((NewsPresenter) presenter).getNewsRetrofit(mPublishDate);
         }
     }
 

@@ -6,5 +6,9 @@
     <string name="save_to_sdcard">保存到手机</string>
     <string name="save_image_failed">保存图片失败</string>
     <string name="save_image_existed">图片已经存在</string>
-    <string name="save_image_success">保存图片成功</string>
+    <string name="save_image_success">图片已保存到该设备</string>
+    <string name="open_source_on_github">open source on github</string>
+    <string name="open_cn">打开</string>
+    <string name="open_en">open</string>
+    <string name="resource_cn">干货</string>
 </resources>

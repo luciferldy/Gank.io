@@ -52,6 +52,7 @@ public class WebFragment extends ISwipeRefreshFragment {
 
         // init toolbar
         Toolbar toolbar = (Toolbar) root.findViewById(R.id.toolbar);
+        toolbar.setTitle(getResources().getString(R.string.resource_cn));
         toolbar.inflateMenu(R.menu.menu_web);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override

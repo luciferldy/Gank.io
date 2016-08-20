@@ -49,7 +49,7 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainAd
         Date date = item.getPublishedAt();
         String str;
         try {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+            DateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
             str = format.format(date);
         } catch (Exception e) {
             Logger.i(LOG_TAG, "Date cast to String occur exception.");
