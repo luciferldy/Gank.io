@@ -5,11 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 import com.gank.io.R;
-import com.gank.io.model.ContentItem;
-import com.gank.io.ui.fragment.MeizhiPreviewFragment;
 
 /**
  * Created by Lucifer on 2016/7/16.
@@ -40,10 +37,12 @@ public class FragmentUtils {
             fragment.setArguments(bundle);
         }
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(android.R.id.content, fragment);
+        //
+        // must set animation before add fragment, or animation not work.
+        //
         if (anim == FragmentAnim.SLIDE_RIGHT) {
             Logger.i(LOG_TAG, "set slide right animation.");
-            transaction.setCustomAnimations(R.anim.slide_right_in, R.anim.slide_right_out, R.anim.slide_right_in, R.anim.slide_right_out);
+            transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_right);
         } else if (anim == FragmentAnim.FADE) {
             Logger.i(LOG_TAG, "set fade animation.");
             transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out);
@@ -51,6 +50,8 @@ public class FragmentUtils {
             //
             Logger.i(LOG_TAG, "anim=" + anim);
         }
+
+        transaction.add(android.R.id.content, fragment);
         if (addBackStack) {
             transaction.addToBackStack(fragment.getClass().getSimpleName() + System.currentTimeMillis());
         }
