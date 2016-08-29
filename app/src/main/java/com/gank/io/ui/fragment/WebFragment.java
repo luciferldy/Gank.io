@@ -24,6 +24,7 @@ import com.gank.io.presenter.WebPresenter;
 import com.gank.io.util.CommonUtils;
 import com.gank.io.util.FragmentUtils;
 import com.gank.io.util.Logger;
+import com.gank.io.util.ShareUtils;
 
 import java.util.List;
 
@@ -57,17 +58,23 @@ public class WebFragment extends ISwipeRefreshFragment {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.open_in_browser) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
-                    startActivity(intent);
-                    return true;
-                } else if (item.getItemId() == R.id.copy_url) {
-                    CommonUtils.copyText(getContext(), mUrl);
-                    Toast.makeText(getContext(), "已经复制到剪贴板", Toast.LENGTH_SHORT).show();
-                    return true;
-                } else {
-                    return false;
+                switch (item.getItemId()) {
+                    case R.id.open_in_browser:
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
+                        startActivity(intent);
+                        return true;
+                    case R.id.copy_url:
+                        CommonUtils.copyText(getContext(), mUrl);
+                        Toast.makeText(getContext(), "已经复制到剪贴板", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.share:
+                        ShareUtils.shareText(getContext(), mUrl);
+                        return true;
+                    default:
+                        break;
                 }
+                Logger.i(LOG_TAG, "onMenuItemClick " + item.getItemId());
+                return false;
             }
         });
 

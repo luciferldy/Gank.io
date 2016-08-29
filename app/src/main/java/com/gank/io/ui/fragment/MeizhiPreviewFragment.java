@@ -32,6 +32,7 @@ import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.util.CommonUtils;
 import com.gank.io.util.FragmentUtils;
 import com.gank.io.util.Logger;
+import com.gank.io.util.ShareUtils;
 import com.gank.io.util.WechatUtils;
 
 import java.io.File;
