@@ -3,16 +3,20 @@ package com.gank.io.util;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.facebook.binaryresource.BinaryResource;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.gank.io.model.ContentItem;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -162,6 +166,25 @@ public class CommonUtils {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * 判断是否安装了特定程序
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static boolean isPackageInstalled(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
+            if (packageInfo != null) {
+                return true;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

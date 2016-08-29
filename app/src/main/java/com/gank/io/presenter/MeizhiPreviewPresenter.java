@@ -113,9 +113,10 @@ public class MeizhiPreviewPresenter extends BasePresenter<IFragmentView> {
                                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                                     fos.flush();
                                     fos.close();
-                                    subscriber.onNext(getImgName(mUrl));
+                                    subscriber.onNext(imgFile.getPath());
                                     subscriber.onCompleted();
                                 } catch (IOException e) {
+                                    Logger.i(LOG_TAG, "Save photo occur IOException");
                                     e.printStackTrace();
                                     subscriber.onError(e);
                                 }
@@ -160,6 +161,11 @@ public class MeizhiPreviewPresenter extends BasePresenter<IFragmentView> {
         }
     }
 
+    /**
+     * 通过 url 获得图片的名字
+     * @param url
+     * @return
+     */
     private String getImgName(String url) {
         String[] parts =  url.split("/");
         return parts[parts.length - 1];

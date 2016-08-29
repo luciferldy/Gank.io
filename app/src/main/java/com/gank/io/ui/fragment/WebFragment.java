@@ -40,7 +40,7 @@ public class WebFragment extends ISwipeRefreshFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.web_content, container, false);
+        final View root = inflater.inflate(R.layout.web_content, container, false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             View view = root.findViewById(R.id.status_bar_holder);
@@ -61,7 +61,7 @@ public class WebFragment extends ISwipeRefreshFragment {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUrl));
                     startActivity(intent);
                     return true;
-                } else if (item.getItemId() == R.id.copy_url){
+                } else if (item.getItemId() == R.id.copy_url) {
                     CommonUtils.copyText(getContext(), mUrl);
                     Toast.makeText(getContext(), "已经复制到剪贴板", Toast.LENGTH_SHORT).show();
                     return true;

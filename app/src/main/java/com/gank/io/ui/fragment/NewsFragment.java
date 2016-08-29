@@ -1,34 +1,25 @@
 package com.gank.io.ui.fragment;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 
 import com.gank.io.R;
 import com.gank.io.model.ContentItem;
 import com.gank.io.presenter.BasePresenter;
 import com.gank.io.presenter.NewsPresenter;
 import com.gank.io.ui.adapter.NewsListAdapter;
-import com.gank.io.ui.view.IFragmentView;
 import com.gank.io.util.CommonUtils;
 import com.gank.io.util.DateUtils;
 import com.gank.io.util.FragmentUtils;

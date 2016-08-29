@@ -159,7 +159,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         }
 
         @Override
-        void bindItem(Context context, final ContentItem item) {
+        void bindItem(final Context context, final ContentItem item) {
             Logger.i(TAG, "view holder bindItem item=" + item.toString());
             Date date = item.getPublishedAt();
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);

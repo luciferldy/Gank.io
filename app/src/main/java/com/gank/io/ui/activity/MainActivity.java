@@ -163,6 +163,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
 //        mPresenter.loadMeizhi(false, mLoadCallback);
     }
 
+
     /**
      * when call onPostCreate, the activity is start-up
      * @param savedInstanceState

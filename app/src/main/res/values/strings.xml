@@ -3,10 +3,12 @@
     <string name="action_settings">设置</string>
     <string name="action_copy">复制链接</string>
     <string name="open_in_browser">在浏览器中打开</string>
+    <string name="share_to_wechat">分享到微信</string>
     <string name="save_to_sdcard">保存到手机</string>
     <string name="save_image_failed">保存图片失败</string>
     <string name="save_image_existed">图片已经存在</string>
     <string name="save_image_success">图片已保存到该设备</string>
+    <string name="image_not_existed">图片不在本地</string>
     <string name="open_source_on_github">open source on github</string>
     <string name="open_cn">打开</string>
     <string name="open_en">open</string>
