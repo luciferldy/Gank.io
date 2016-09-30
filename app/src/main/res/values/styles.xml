@@ -23,4 +23,9 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- 将 windowBackground 设置为 @null 可以避免应用启动页面有白色过渡 -->
+    <style name="AppTheme.NoActionBar.BackgroundTranslucent">
+        <item name="android:windowBackground">@null</item>
+    </style>
+
 </resources>

@@ -129,7 +129,7 @@ public class MainPresenter extends BasePresenter {
 
             @Override
             public void onFailure(Call<MeizhiGson> call, Throwable t) {
-                Logger.i(LOG_TAG, "onFailure");
+                Logger.e(LOG_TAG, "onFailure", t);
                 isLoadingData = false;
                 ((ISwipeRefreshActivity) mView).onComplete();
             }
