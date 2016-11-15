@@ -77,6 +77,7 @@ public class WebFragment extends ISwipeRefreshFragment {
                 return false;
             }
         });
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 
         mWvContent = (WebView) root.findViewById(R.id.web_content);
         initRefreshLayout((SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh_layout));

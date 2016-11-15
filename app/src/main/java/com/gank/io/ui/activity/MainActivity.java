@@ -1,5 +1,6 @@
 package com.gank.io.ui.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -53,16 +54,16 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         Logger.i(LOG_TAG, "onCreate");
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            View view = findViewById(R.id.status_bar_holder);
-            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) view.getLayoutParams();
-            params.height = CommonUtils.getStatusbarHeight(getBaseContext());
-            view.setLayoutParams(params);
-            view.setVisibility(View.VISIBLE);
-        }
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.app_name);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            View view = findViewById(R.id.status_bar_holder);
+//            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) view.getLayoutParams();
+//            params.height = CommonUtils.getStatusbarHeight(getBaseContext());
+//            view.setLayoutParams(params);
+//            view.setVisibility(View.VISIBLE);
+//        }
+//
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        toolbar.setTitle(R.string.app_name);
 
         initRefreshLayout((SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout));
 
@@ -163,6 +164,11 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
 //        mPresenter.loadMeizhi(false, mLoadCallback);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hideSystemUI();
+    }
 
     /**
      * when call onPostCreate, the activity is start-up
@@ -184,7 +190,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         int count = manager.getBackStackEntryCount();
         if (count > 0) {
             String fName = manager.getBackStackEntryAt(count - 1).getName();
-            Fragment fragment = (Fragment) manager.findFragmentByTag(fName);
+            Fragment fragment = manager.findFragmentByTag(fName);
             if (null != fragment && fragment instanceof IFragmentView) {
                 ((IFragmentView) fragment).onBackPressed();
                 return;
@@ -227,5 +233,29 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         Logger.i(LOG_TAG, "onRefresh");
         mPresenter.getMeizhiRetrofit(false);
 //        mPresenter.loadMeizhi(false, mLoadCallback);
+    }
+
+    // This snippet hides the system bars.
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void hideSystemUI() {
+        // Set the immersive flag
+        // Set the content to appear under the system bars so that the content
+        // doesn't resize when the system bars hie and show.
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                | View.SYSTEM_UI_FLAG_IMMERSIVE);
+    }
+
+    // This snippet shows the system bars. It does this by removing all the flags
+    // except for the ones that make the content appear under the system bars.
+    // Android 4.1 可以使用 SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void showSystemUi() {
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 }
