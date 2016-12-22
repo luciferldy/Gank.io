@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <me.relex.photodraweeview.PhotoDraweeView
         android:id="@+id/meizhi_preview_img"
         android:layout_width="match_parent"
         android:layout_height="360dip"

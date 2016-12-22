@@ -2,9 +2,8 @@ package com.gank.io.presenter;
 
 import android.app.Activity;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.gank.io.api.GankApiService;
+import com.gank.io.api.GankDailyService;
 import com.gank.io.model.ContentItem;
 import com.gank.io.ui.fragment.ISwipeRefreshFragment;
 import com.gank.io.ui.view.IBaseView;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
@@ -73,9 +71,9 @@ public class NewsPresenter extends BasePresenter {
     public synchronized void getNewsRetrofit(final String date) {
         isLoading = true;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(GetRss.API_URL)
+                .baseUrl(GetRss.API_DAILY_URL)
                 .build();
-        GankApiService service = retrofit.create(GankApiService.class);
+        GankDailyService service = retrofit.create(GankDailyService.class);
         Call<ResponseBody> call = service.getGankDaily(date);
         call.enqueue(new Callback<ResponseBody>() {
             @Override

@@ -7,6 +7,8 @@
     android:background="@color/md_white"
     tools:context=".ui.activity.MainActivity">
 
+    <include layout="@layout/model_toolbar" />
+
     <include layout="@layout/content_main" />
 
     <android.support.design.widget.FloatingActionButton

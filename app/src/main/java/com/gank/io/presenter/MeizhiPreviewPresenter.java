@@ -80,7 +80,7 @@ public class MeizhiPreviewPresenter extends BasePresenter<IFragmentView> {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
                 Logger.i(LOG_TAG, "call");
-                CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(ImageRequest.fromUri(Uri.parse(mUrl)));
+                CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(ImageRequest.fromUri(Uri.parse(mUrl)), null);
                 File localFile = CommonUtils.getCachedImageOnDisk(cacheKey);
                 if (localFile == null) {
                     ImageRequest imageRequest = ImageRequestBuilder

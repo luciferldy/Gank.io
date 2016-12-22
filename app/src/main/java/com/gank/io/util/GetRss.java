@@ -13,12 +13,13 @@ import java.net.URL;
 public class GetRss {
 
     private static final String LOG_TAG = GetRss.class.getSimpleName();
-    public static final String API_URL = "http://gank.io/api/day/";
+    public static final String API_DAILY_URL = "http://gank.io/api/day/";
     public static final String API_MEIZHI_URL = "http://gank.io/api/data/%E7%A6%8F%E5%88%A9/";
+    public static final String API_GANK = "http://gank.io/";
 
-        public static String getRssContent(String date) {
+    public static String getRssContent(String date) {
         try {
-            URL url = new URL(API_URL + date);
+            URL url = new URL(API_DAILY_URL + date);
             HttpURLConnection urlCon = (HttpURLConnection)url.openConnection();
             urlCon.setConnectTimeout(5000);
             urlCon.setReadTimeout(5000);

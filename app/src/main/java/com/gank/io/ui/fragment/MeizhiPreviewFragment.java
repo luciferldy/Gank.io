@@ -29,17 +29,18 @@ import com.gank.io.R;
 import com.gank.io.model.ContentItem;
 import com.gank.io.presenter.MeizhiPreviewPresenter;
 import com.gank.io.ui.view.IFragmentView;
-import com.gank.io.util.CommonUtils;
 import com.gank.io.util.FragmentUtils;
 import com.gank.io.util.Logger;
-import com.gank.io.util.ShareUtils;
 import com.gank.io.util.WechatUtils;
 
 import java.io.File;
 import java.util.List;
 
+import me.relex.photodraweeview.PhotoDraweeView;
+
 /**
  * Created by lucifer on 16-1-4.
+ * 使用 https://github.com/ongakuer/PhotoDraweeView 进行图片的简单手势操作。
  */
 public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
 
@@ -48,7 +49,7 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
     private static final int SHARE_TO_FRIEND = 3;
     private static final String LOG_TAG = MeizhiPreviewFragment.class.getSimpleName();
 
-    private SimpleDraweeView meizhiimg;
+    private PhotoDraweeView mPdv;
     private View mContainer;
 
     private MeizhiPreviewPresenter mPresenter;
@@ -70,12 +71,12 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
                 return true;
             }
         });
-        meizhiimg = (SimpleDraweeView) mContainer.findViewById(R.id.meizhi_preview_img);
+        mPdv = (PhotoDraweeView) mContainer.findViewById(R.id.meizhi_preview_img);
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setControllerListener(mControllerListener)
                 .setUri(Uri.parse(mUrl))
                 .build();
-        meizhiimg.setController(controller);
+        mPdv.setController(controller);
         initPresenter();
         return mContainer;
     }
@@ -202,11 +203,13 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
          * 图片下载成功时
          */
         public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+            super.onFinalImageSet(id, imageInfo, animatable);
             if (imageInfo == null) {
                 return;
             }
+            mPdv.update(imageInfo.getWidth(), imageInfo.getHeight());
             // 图片加载成功之后可以使用 ContextMenu
-            registerForContextMenu(meizhiimg);
+            registerForContextMenu(mPdv);
             QualityInfo qualityInfo = imageInfo.getQualityInfo();
             FLog.i(LOG_TAG, "Final image received! Size %d x %d Quality level %d, good enough: %s, full quality: %s",
                     imageInfo.getWidth(),

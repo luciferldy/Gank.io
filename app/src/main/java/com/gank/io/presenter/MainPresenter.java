@@ -3,7 +3,7 @@ package com.gank.io.presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 
-import com.gank.io.api.MeizhiApiService;
+import com.gank.io.api.MeizhiService;
 import com.gank.io.model.ContentItem;
 import com.gank.io.model.MeizhiGson;
 import com.gank.io.ui.activity.ISwipeRefreshActivity;
@@ -31,6 +31,8 @@ public class MainPresenter extends BasePresenter {
     private static final int REQUEST_COUNT = 10; // 请求次数
     private static int mPageNumber = 1; // 第几页，初始值为1，自增，可以大于请求次数
     private static boolean isLoadingData = false;
+    Retrofit retrofit;
+    MeizhiService mZService;
 
     public MainPresenter(Activity context, IBaseView view) {
         super(context, view);
@@ -90,7 +92,8 @@ public class MainPresenter extends BasePresenter {
      */
     public synchronized void getMeizhiRetrofit(final boolean loadMore) {
         isLoadingData = true;
-        Retrofit retrofit = new Retrofit.Builder()
+        if (retrofit == null)
+            retrofit = new Retrofit.Builder()
                 .baseUrl(GetRss.API_MEIZHI_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -99,8 +102,9 @@ public class MainPresenter extends BasePresenter {
         } else {
             mPageNumber = 1;
         }
-        MeizhiApiService service = retrofit.create(MeizhiApiService.class);
-        Call<MeizhiGson> call = service.getMeizhi(REQUEST_COUNT, mPageNumber);
+        if (mZService == null)
+            mZService = retrofit.create(MeizhiService.class);
+        Call<MeizhiGson> call = mZService.getMeizhi(REQUEST_COUNT, mPageNumber);
         call.enqueue(new Callback<MeizhiGson>() {
             @Override
             public void onResponse(Call<MeizhiGson> call, Response<MeizhiGson> response) {

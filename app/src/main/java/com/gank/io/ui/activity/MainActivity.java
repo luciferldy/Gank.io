@@ -11,7 +11,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +21,7 @@ import android.view.View;
 
 import com.gank.io.R;
 import com.gank.io.model.ContentItem;
-import com.gank.io.ui.adapter.MainListAdapter;
+import com.gank.io.ui.adapter.MainRvAdapter;
 import com.gank.io.presenter.MainPresenter;
 import com.gank.io.ui.fragment.MeizhiPreviewFragment;
 import com.gank.io.ui.fragment.NewsFragment;
@@ -44,8 +43,8 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRvMeizhi;
     private MainPresenter mPresenter;
-    private MainListAdapter mAdapter;
-    private MainListAdapter.IClickMainItem mClickItem;
+    private MainRvAdapter mAdapter;
+    private MainRvAdapter.IClickMainItem mClickItem;
     private MainPresenter.LoadCallback mLoadCallback;
 
     @Override
@@ -54,16 +53,20 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         Logger.i(LOG_TAG, "onCreate");
         setContentView(R.layout.activity_main);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            View view = findViewById(R.id.status_bar_holder);
-//            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) view.getLayoutParams();
-//            params.height = CommonUtils.getStatusbarHeight(getBaseContext());
-//            view.setLayoutParams(params);
-//            view.setVisibility(View.VISIBLE);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            View view = findViewById(R.id.status_bar_holder);
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) view.getLayoutParams();
+            params.height = CommonUtils.getStatusbarHeight(getBaseContext());
+            view.setLayoutParams(params);
+            view.setVisibility(View.VISIBLE);
+//            SwipeRefreshLayout root = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+//            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) root.getLayoutParams();
+//            params.topMargin = CommonUtils.getStatusbarHeight(getBaseContext());
+//            root.setLayoutParams(params);
+        }
 //
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setTitle(R.string.app_name);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
 
         initRefreshLayout((SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout));
 
@@ -86,7 +89,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         mRvMeizhi = (RecyclerView)findViewById(R.id.rv_meizhi);
         final StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, OrientationHelper.VERTICAL);
         mRvMeizhi.setLayoutManager(layoutManager);
-        mAdapter = new MainListAdapter(getBaseContext());
+        mAdapter = new MainRvAdapter(getBaseContext());
         mRvMeizhi.setAdapter(mAdapter);
         mRvMeizhi.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -114,7 +117,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        mClickItem = new MainListAdapter.IClickMainItem() {
+        mClickItem = new MainRvAdapter.IClickMainItem() {
             @Override
             public void onClickGankItem(ContentItem item) {
                 try {
@@ -167,7 +170,7 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
     @Override
     protected void onResume() {
         super.onResume();
-        hideSystemUI();
+//        hideSystemUI();
     }
 
     /**
@@ -257,5 +260,14 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        Logger.i(LOG_TAG, "onWindowFocusChanged hasFocus = " + hasFocus);
+        super.onWindowFocusChanged(hasFocus);
+//        if (hasFocus) {
+//            hideSystemUI();
+//        }
     }
 }
