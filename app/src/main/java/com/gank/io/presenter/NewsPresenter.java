@@ -64,18 +64,27 @@ public class NewsPresenter extends BasePresenter {
 
     }
 
+
+    Retrofit mRetrofit;
+    GankDailyService mDailyService;
+    Call<ResponseBody> mCall;
+
     /**
      * 使用 retrofit 加载内容的详细信息
      * @param date 日期
      */
     public synchronized void getNewsRetrofit(final String date) {
         isLoading = true;
-        Retrofit retrofit = new Retrofit.Builder()
+        if (mRetrofit == null)
+            mRetrofit = new Retrofit.Builder()
                 .baseUrl(GetRss.API_DAILY_URL)
                 .build();
-        GankDailyService service = retrofit.create(GankDailyService.class);
-        Call<ResponseBody> call = service.getGankDaily(date);
-        call.enqueue(new Callback<ResponseBody>() {
+        if (mDailyService == null)
+            mDailyService = mRetrofit.create(GankDailyService.class);
+        if (mCall != null && mCall.isExecuted())
+            mCall.cancel();  // Cancel 掉上一个 call.
+        mCall = mDailyService.getGankDaily(date);
+        mCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 String result;
@@ -115,6 +124,14 @@ public class NewsPresenter extends BasePresenter {
                 ((ISwipeRefreshFragment) mView).onComplete();
             }
         });
+    }
+
+    @Override
+    public synchronized void onDestroy() {
+        super.onDestroy();
+        if (mCall != null && !mCall.isCanceled()) {
+            mCall.cancel();
+        }
     }
 
     public boolean isLoading() {

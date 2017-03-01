@@ -17,4 +17,8 @@ public class BasePresenter<BV extends IBaseView> {
         this.mActivity = activity;
         this.mView = view;
     }
+
+    public void onDestroy() {
+
+    }
 }

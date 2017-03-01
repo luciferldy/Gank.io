@@ -207,8 +207,19 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
             if (imageInfo == null) {
                 return;
             }
-            mPdv.update(imageInfo.getWidth(), imageInfo.getHeight());
+            try {
+                mPdv.update(imageInfo.getWidth(), imageInfo.getHeight());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             // 图片加载成功之后可以使用 ContextMenu
+            mPdv.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Logger.i(LOG_TAG, "PHotoDraweeView onLongClick");
+                    return false;
+                }
+            });
             registerForContextMenu(mPdv);
             QualityInfo qualityInfo = imageInfo.getQualityInfo();
             FLog.i(LOG_TAG, "Final image received! Size %d x %d Quality level %d, good enough: %s, full quality: %s",

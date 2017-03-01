@@ -184,6 +184,12 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         mPresenter.getMeizhiRetrofit(false);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
+    }
+
     /**
      * handle the key back event
      */

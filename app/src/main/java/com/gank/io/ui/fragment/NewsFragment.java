@@ -119,6 +119,13 @@ public class NewsFragment extends ISwipeRefreshFragment{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        presenter.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        // Called after the onDestroyView
+        super.onDetach();
     }
 
     @Override

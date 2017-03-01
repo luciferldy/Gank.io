@@ -33,6 +33,8 @@ public class MainPresenter extends BasePresenter {
     private static boolean isLoadingData = false;
     Retrofit retrofit;
     MeizhiService mZService;
+    Call<MeizhiGson> mMeizhiCall;
+
 
     public MainPresenter(Activity context, IBaseView view) {
         super(context, view);
@@ -104,8 +106,10 @@ public class MainPresenter extends BasePresenter {
         }
         if (mZService == null)
             mZService = retrofit.create(MeizhiService.class);
-        Call<MeizhiGson> call = mZService.getMeizhi(REQUEST_COUNT, mPageNumber);
-        call.enqueue(new Callback<MeizhiGson>() {
+        if (mMeizhiCall != null && mMeizhiCall.isExecuted())
+            mMeizhiCall.cancel();  // Cancel 掉上一次的 Call
+        mMeizhiCall = mZService.getMeizhi(REQUEST_COUNT, mPageNumber);
+        mMeizhiCall.enqueue(new Callback<MeizhiGson>() {
             @Override
             public void onResponse(Call<MeizhiGson> call, Response<MeizhiGson> response) {
                 List<MeizhiGson.ResultsBean> girls  = response.body().getResults();
@@ -139,6 +143,14 @@ public class MainPresenter extends BasePresenter {
             }
         });
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mMeizhiCall != null && !mMeizhiCall.isCanceled()) {
+            mMeizhiCall.cancel();
+        }
     }
 
     public synchronized boolean isLoadingData() {
