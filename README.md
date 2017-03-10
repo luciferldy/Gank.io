@@ -4,15 +4,15 @@
 
 ### 简介
 
-首页使用 Activity ，Gank 内容和妹纸大图的展示使用 Fragment 。对 Android 4.4 和 5.0 以上的进行半透明，透明状态栏的适配。
-
-网络访问使用 [Retrofit](https://github.com/square/retrofit) 框架。
-
-妹纸图片的加载使用 [Fresco](http://fresco-cn.org/) 框架。
-
-保存图片主要使用 [RxAndroid](https://github.com/ReactiveX/RxAndroid) 对 io 线程和 UI 线程交互。
-
 项目整体使用MVP框架，主要参考 [MVP 模式在 GankDaily 中的应用](http://gudong.name/advanced/2015/11/23/gank_mvp_introduce.html) 和 [浅谈 MVP in Android](http://blog.csdn.net/lmj623565791/article/details/46596109)。
+
+以 Activity 作为容器，Fragment 作为轻量级展示咨询内容和图片。
+
+网络访问使用 [Retrofit](https://github.com/square/retrofit) 框架。妹纸图片的加载使用 [Fresco](http://fresco-cn.org/) 框架。保存图片主要使用 [RxAndroid](https://github.com/ReactiveX/RxAndroid) 对 IO 线程和 UI 线程交互。
+
+首页对日报的概要信息进行懒加载，查看图片时支持手势缩放和拖拽。
+
+沉浸式状态栏对 Android 4.4 以及 5.0 以上的版本做了适配。
 
 ### 依赖库
 
