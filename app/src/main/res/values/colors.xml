@@ -3,4 +3,5 @@
     <color name="colorPrimary">@color/md_blue_500</color>
     <color name="colorPrimaryDark">@color/md_blue_700</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="blackMask">#8F000000</color>
 </resources>

@@ -99,29 +99,29 @@ public class MeizhiPreviewPresenter extends BasePresenter<IFragmentView> {
                                 return;
                             }
                             String dirName = Environment.getExternalStorageDirectory() + "/Gank.io/";
-                            File dirFile = new File(dirName);
+                        File dirFile = new File(dirName);
                             if (!dirFile.exists()) {
-                                dirFile.mkdir();
-                            }
-                            File imgFile = new File(dirFile, getImgName(mUrl));
+                            dirFile.mkdir();
+                        }
+                        File imgFile = new File(dirFile, getImgName(mUrl));
                             if (imgFile.exists()) {
-                                subscriber.onError(new Throwable(ERROR_FILE_EXISTED));
-                            } else {
-                                try {
-                                    FileOutputStream fos = new FileOutputStream(imgFile);
-                                    assert bitmap != null;
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                                    fos.flush();
-                                    fos.close();
-                                    subscriber.onNext(imgFile.getPath());
-                                    subscriber.onCompleted();
-                                } catch (IOException e) {
-                                    Logger.i(LOG_TAG, "Save photo occur IOException");
-                                    e.printStackTrace();
-                                    subscriber.onError(e);
-                                }
+                            subscriber.onError(new Throwable(ERROR_FILE_EXISTED));
+                        } else {
+                            try {
+                                FileOutputStream fos = new FileOutputStream(imgFile);
+                                assert bitmap != null;
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                fos.flush();
+                                fos.close();
+                                subscriber.onNext(imgFile.getPath());
+                                subscriber.onCompleted();
+                            } catch (IOException e) {
+                                Logger.i(LOG_TAG, "Save photo occur IOException");
+                                e.printStackTrace();
+                                subscriber.onError(e);
                             }
                         }
+                    }
 
                         @Override
                         protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {

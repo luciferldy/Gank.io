@@ -1,23 +1,31 @@
 package com.gank.io.ui.activity;
 
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.gank.io.R;
 import com.gank.io.model.ContentItem;
@@ -31,21 +39,25 @@ import com.gank.io.util.CommonUtils;
 import com.gank.io.util.DateUtils;
 import com.gank.io.util.FragmentUtils;
 import com.gank.io.util.Logger;
+import com.squareup.haha.perflib.Main;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.jar.Manifest;
 
 public class MainActivity extends ISwipeRefreshActivity implements IMainView {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final int PERMISSIONS_REQUEST_CODE = 512;
     private RecyclerView mRvMeizhi;
     private MainPresenter mPresenter;
     private MainRvAdapter mAdapter;
     private MainRvAdapter.IClickMainItem mClickItem;
     private MainPresenter.LoadCallback mLoadCallback;
+    private String[] permissions = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +177,20 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
             }
         };
 //        mPresenter.loadMeizhi(false, mLoadCallback);
+
+        if (lackPermissions(permissions)) {
+            Logger.i(LOG_TAG, "lack permissions.");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                showPermissionExplaination("Allow access to Storage for save pictures.", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(MainActivity.this, permissions, PERMISSIONS_REQUEST_CODE);
+                    }
+                });
+            } else {
+                ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE);
+            }
+        }
     }
 
     @Override
@@ -182,6 +208,31 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
         super.onPostCreate(savedInstanceState);
         showRefresh();
         mPresenter.getMeizhiRetrofit(false);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CODE:
+                if (grantResults.length > 0) {
+                    boolean denied = false;
+                    for (int i = 0; i < permissions.length; i++) {
+                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                            denied = true;
+                            break;
+                        }
+                    }
+                    if (denied) {
+                        Toast.makeText(getBaseContext(), "Some permissions are denied.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Logger.i(LOG_TAG, "It seems that no permission is required.");
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
     }
 
     @Override
@@ -275,5 +326,26 @@ public class MainActivity extends ISwipeRefreshActivity implements IMainView {
 //        if (hasFocus) {
 //            hideSystemUI();
 //        }
+    }
+
+    private void showPermissionExplaination(String message, DialogInterface.OnClickListener listener) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setMessage(message)
+                .setPositiveButton("Ok", listener)
+                .setNegativeButton("Cancel", null)
+                .create().show();
+    }
+
+    private boolean lackPermissions(String... permissions) {
+        for (String permission : permissions) {
+            if (lackPermission(permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean lackPermission(String permission) {
+        return ContextCompat.checkSelfPermission(getBaseContext(), permission) != PackageManager.PERMISSION_GRANTED;
     }
 }

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.facebook.common.logging.FLog;
@@ -42,7 +43,7 @@ import me.relex.photodraweeview.PhotoDraweeView;
  * Created by lucifer on 16-1-4.
  * 使用 https://github.com/ongakuer/PhotoDraweeView 进行图片的简单手势操作。
  */
-public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
+public class MeizhiPreviewFragment extends Fragment implements IFragmentView {
 
     private static final int SAVE_PIC_ID = 1;
     private static final int SHARE_TO_TIMELINE_ID = 2;
@@ -51,6 +52,8 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
 
     private PhotoDraweeView mPdv;
     private View mContainer;
+    private ImageView mIvDownload;
+    private ImageView mIvShare;
 
     private MeizhiPreviewPresenter mPresenter;
     private String mUrl;
@@ -71,6 +74,8 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
                 return true;
             }
         });
+        mIvDownload = (ImageView) mContainer.findViewById(R.id.download);
+        mIvShare = (ImageView) mContainer.findViewById(R.id.share);
         mPdv = (PhotoDraweeView) mContainer.findViewById(R.id.meizhi_preview_img);
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setControllerListener(mControllerListener)
@@ -218,6 +223,50 @@ public class MeizhiPreviewFragment extends Fragment implements IFragmentView{
                 public boolean onLongClick(View v) {
                     Logger.i(LOG_TAG, "PHotoDraweeView onLongClick");
                     return false;
+                }
+            });
+            mIvDownload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mPresenter.saveImg(mUrl, new MeizhiPreviewPresenter.SaveImgCallback() {
+                        @Override
+                        public void onSuccess(final String path) {
+                            mLocalPath = path;
+                            Logger.i(LOG_TAG, "save image success path = " + path);
+                            Snackbar.make(mContainer, R.string.save_image_success, Snackbar.LENGTH_SHORT)
+                                    .setAction(R.string.open_cn, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            intent.setDataAndType(Uri.parse(path), "image/*");
+                                            startActivity(intent);
+                                        }
+                                    }).show();
+                        }
+
+                        @Override
+                        public void onFailed(String errorMsg) {
+                            Logger.i(LOG_TAG, "save image failed error msg = " + errorMsg);
+                            if (errorMsg.equals(MeizhiPreviewPresenter.ERROR_FILE_EXISTED))
+                                Snackbar.make(mContainer, R.string.save_image_existed, Snackbar.LENGTH_SHORT)
+                                        .show();
+                            else
+                                Snackbar.make(mContainer, R.string.save_image_failed, Snackbar.LENGTH_SHORT)
+                                        .show();
+                        }
+                    });
+                }
+            });
+            mIvShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!TextUtils.isEmpty(mLocalPath)) {
+                        WechatUtils.shareToTimeLine(getContext(), "来自 Gank.io 的妹纸", mLocalPath);
+                    } else {
+                        Snackbar.make(mContainer, R.string.image_not_existed, Snackbar.LENGTH_SHORT)
+                                .show();
+                    }
                 }
             });
             registerForContextMenu(mPdv);
